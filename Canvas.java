@@ -19,8 +19,10 @@ public class Canvas {
     // shape objects in this project clean and simple for educational purposes.
 
     private static Canvas canvasSingleton;
-    public static final int CANVAS_WIDTH = 600;
-    public static final int CANVAS_HEIGHT = 600;
+    public static final int WIDTH = 600;
+    public static final int HEIGHT = 600;
+    public static final Point CENTER = new Point(WIDTH / 2, HEIGHT / 2);
+
     private static final String CANVAS_TITLE = "SpiderWeb Camargo Panqueva";
 
     /**
@@ -28,7 +30,7 @@ public class Canvas {
      */
     public static Canvas getCanvas() {
         if (canvasSingleton == null) {
-            canvasSingleton = new Canvas(CANVAS_TITLE, CANVAS_WIDTH, CANVAS_HEIGHT, Color.white);
+            canvasSingleton = new Canvas(CANVAS_TITLE, WIDTH, HEIGHT, Color.white);
         }
         canvasSingleton.setVisible(true);
         return canvasSingleton;
@@ -135,6 +137,7 @@ public class Canvas {
             case "green" -> graphic.setColor(new Color(86, 203, 86));
             case "magenta" -> graphic.setColor(new Color(213, 89, 213));
             case "white" -> graphic.setColor(new Color(255, 255, 255));
+            case "gray" -> graphic.setColor(new Color(128, 128, 128));
             default -> graphic.setColor(new Color(0, 0, 0));
         }
     }

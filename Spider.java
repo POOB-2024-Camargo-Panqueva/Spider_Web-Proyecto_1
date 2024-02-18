@@ -1,0 +1,28 @@
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+
+public class Spider {
+
+    private final int WIDTH = 40;
+    private final int HEIGHT = 30;
+
+    private final Point position;
+
+    public Spider(Point position) {
+        this.position = position;
+    }
+
+    public void draw() {
+        Canvas canvas = Canvas.getCanvas();
+        double xDraw = position.getX() - (double) WIDTH / 2;
+        double yDraw = position.getY() - (double) HEIGHT / 2;
+
+        canvas.draw(this, "black", new Ellipse2D.Double(xDraw, yDraw, WIDTH, HEIGHT));
+    }
+
+    public void move(int x, int y) {
+        this.position.setLocation(this.position.getX() + x, this.position.getY() + y);
+        this.draw();
+    }
+}
