@@ -89,4 +89,24 @@ public final class SpiderWeb {
 
         this.addBridge(color, distance, targetBridge.getInitialStrand());
     }
+
+    public void removeBridge(String color) {
+        Bridge targetBridge = null;
+
+        for (int i = 0; i < this.bridges.size(); i++) {
+            if (this.bridges.get(i).getColor().equals(color)) {
+                targetBridge = this.bridges.remove(i);
+                targetBridge.erase();
+                break;
+            }
+        }
+
+        if (targetBridge == null) {
+            //TODO: throw exception and show message with JOptionPane
+            System.out.println("Bridge not found");
+            return;
+        }
+
+        this.draw();
+    }
 }
