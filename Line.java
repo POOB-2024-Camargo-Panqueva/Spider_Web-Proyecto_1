@@ -16,6 +16,16 @@ public final class Line {
         canvas.draw(this, "red", new Line2D.Double(start.getX(), start.getY(), end.getX(), end.getY()));
     }
 
+    public Point getScaledPoint(double scale) {
+        if (scale < 0 || scale > 1) {
+            throw new IllegalArgumentException("Invalid scale");
+        }
+
+        int x = (int) (start.getX() + (end.getX() - start.getX()) * scale);
+        int y = (int) (start.getY() + (end.getY() - start.getY()) * scale);
+        return new Point(x, y);
+    }
+
     public String toString() {
         return String.format("Line [%s, %s]", start, end);
     }

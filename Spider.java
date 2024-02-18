@@ -4,8 +4,8 @@ import java.awt.geom.Line2D;
 
 public class Spider {
 
-    private final int WIDTH = 40;
-    private final int HEIGHT = 30;
+    private final int WIDTH = 30;
+    private final int HEIGHT = 24;
 
     private final Point position;
 
