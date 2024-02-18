@@ -18,7 +18,7 @@ public final class SpiderWeb {
 
         this.isVisible = false;
 
-        this.spider = new Spider(new Point(Canvas.CENTER));
+        this.spider = new Spider(new Point(Canvas.CENTER), 1);
         this.strandLines = new ArrayList<>(this.strands);
         this.bridges = new ArrayList<>();
 
