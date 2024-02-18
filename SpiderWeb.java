@@ -18,7 +18,7 @@ public final class SpiderWeb {
 
         this.isVisible = false;
 
-        this.spider = new Spider(new Point(Canvas.CENTER), 1);
+        this.spider = new Spider(new Point(Canvas.CENTER));
         this.strandLines = new ArrayList<>(this.strands);
         this.bridges = new ArrayList<>();
 
@@ -108,5 +108,24 @@ public final class SpiderWeb {
         }
 
         this.draw();
+    }
+
+    public void addFavoriteStrand(String color, Integer strand) {
+        Integer result = spider.addFavoriteStrand(color, strand);
+
+        if (result != null) {
+            MessageHandler.showError("The new strand cannot be added", "already exist a strand with color: " + color);
+        }
+    }
+
+    public void removeFavoriteStrand(String color) {
+        Integer result = spider.removeFavoriteStrand(color);
+
+        if (result == null) {
+            MessageHandler.showError("Nothing was found to delete", "");
+            return;
+        }
+
+        MessageHandler.showInfo("The Strand " + color + "was deleted");
     }
 }
