@@ -10,7 +10,16 @@ public final class Bridge {
     private final Point initialPoint;
     private final Point finalPoint;
 
-
+    /**
+     * Constructs a new instance of Bridge with the specified parameters.
+     *
+     * @param distance       The distance of the bridge.
+     * @param initialStrand  The initial strand connected by the bridge.
+     * @param finalStrand    The final strand connected by the bridge.
+     * @param initialPoint   The initial point of the bridge.
+     * @param finalPoint     The final point of the bridge.
+     * @param color          The color of the bridge.
+     */
     public Bridge(int distance, int initialStrand, int finalStrand, Point initialPoint, Point finalPoint, String color) {
         this.distance = distance;
         this.initialStrand = initialStrand;
@@ -21,11 +30,17 @@ public final class Bridge {
         this.finalPoint = finalPoint;
     }
 
+    /**
+     * Draws the bridge on the canvas.
+     */
     public void draw() {
         Canvas canvas = Canvas.getCanvas();
         canvas.draw(this, this.color, new Line2D.Double(initialPoint.getX(), initialPoint.getY(), finalPoint.getX(), finalPoint.getY()));
     }
 
+    /**
+     * Erases the bridge from the canvas.
+     */
     public void erase() {
         Canvas canvas = Canvas.getCanvas();
         canvas.erase(this);
