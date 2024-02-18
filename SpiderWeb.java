@@ -139,8 +139,6 @@ public final class SpiderWeb {
         }
 
         this.strandLines.get(strand).setColor(color);
-
-        this.draw();
     }
 
     public void removeFavoriteStrand(String color) {
@@ -151,9 +149,8 @@ public final class SpiderWeb {
             return;
         }
 
+        this.strandLines.get(result).setColor("gray");
         MessageHandler.showInfo("The Strand " + color + " was deleted");
-
-        this.draw();
     }
 
     public void finish() {

@@ -37,6 +37,7 @@ public final class Line {
 
     public void setColor(String color) {
         this.color = color;
+        this.draw();
     }
 
     public String toString() {
