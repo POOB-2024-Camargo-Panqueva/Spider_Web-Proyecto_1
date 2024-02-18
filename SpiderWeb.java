@@ -45,9 +45,11 @@ public final class SpiderWeb {
             this.bridges.forEach(Bridge::draw);
             this.spider.draw();
         }
+
+        System.out.println(this.bridges.size() + " bridges");
     }
 
-    public void addBridge(String color, int distance, int firstStrand) throws IllegalArgumentException, IllegalStateException{
+    public void addBridge(String color, int distance, int firstStrand) throws IllegalArgumentException, IllegalStateException {
         if (firstStrand < 0 || firstStrand >= this.strands) {
             throw new IllegalArgumentException("Invalid first strand");
         }
@@ -65,5 +67,26 @@ public final class SpiderWeb {
         this.bridges.add(new Bridge(distance, firstStrand, finalStrand, initialPoint, finalPoint, color));
 
         this.draw();
+    }
+
+    public void relocateBridge(String color, int distance) {
+
+        Bridge targetBridge = null;
+
+        for (int i = 0; i < this.bridges.size(); i++) {
+            if (this.bridges.get(i).getColor().equals(color)) {
+                targetBridge = this.bridges.remove(i);
+                targetBridge.erase();
+                break;
+            }
+        }
+
+        if (targetBridge == null) {
+            //TODO: throw exception and show message with JOptionPane
+            System.out.println("Bridge not found");
+            return;
+        }
+
+        this.addBridge(color, distance, targetBridge.getInitialStrand());
     }
 }

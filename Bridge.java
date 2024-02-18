@@ -25,4 +25,33 @@ public final class Bridge {
         Canvas canvas = Canvas.getCanvas();
         canvas.draw(this, this.color, new Line2D.Double(initialPoint.getX(), initialPoint.getY(), finalPoint.getX(), finalPoint.getY()));
     }
+
+    public void erase() {
+        Canvas canvas = Canvas.getCanvas();
+        canvas.erase(this);
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getInitialStrand() {
+        return initialStrand;
+    }
+
+    public int getFinalStrand() {
+        return finalStrand;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Point getInitialPoint() {
+        return initialPoint;
+    }
+
+    public Point getFinalPoint() {
+        return finalPoint;
+    }
 }
