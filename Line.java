@@ -64,6 +64,10 @@ public final class Line {
         this.draw();
     }
 
+    public Point getEnd() {
+        return end;
+    }
+
     public String toString() {
         return String.format("Line [%s, %s]", start, end);
     }

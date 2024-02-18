@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public final class SpiderWeb {
 
@@ -11,6 +13,57 @@ public final class SpiderWeb {
     private final int radio;
 
     private boolean isVisible;
+
+    private ArrayList<Point> getShortestWay(int targetStrand) {
+        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
+        ArrayList<Point> movementPoints = new ArrayList<>();
+        movementPoints.add(strandLines.get(targetStrand).getEnd());
+        boolean flag = true;
+        int currentStrand = targetStrand;
+        int currentDistance = this.radio;
+
+        while (flag) {
+            if (bridges.isEmpty()) {
+                //TODO : how to identify the Strand by its number
+            }
+
+            int candidates = 0;
+
+            for (Bridge bridge : bridges) {
+                if ((currentStrand != bridge.getInitialStrand() && currentStrand != bridge.getFinalStrand()) || currentDistance <= bridge.getDistance()) {
+                    continue;
+                }
+                candidates++;
+
+                if (currentStrand == bridge.getFinalStrand()) {
+                    movementPoints.add(bridge.getFinalPoint());
+                    movementPoints.add(bridge.getInitialPoint());
+                    currentStrand = bridge.getInitialStrand();
+                    currentDistance = bridge.getDistance();
+
+                    System.out.printf("%s %s %s 1 \n", currentDistance, bridge.getDistance(), currentStrand);
+                    break;
+                }
+                movementPoints.add(bridge.getInitialPoint());
+                movementPoints.add(bridge.getFinalPoint());
+                currentStrand = bridge.getFinalStrand();
+                currentDistance = bridge.getDistance();
+
+                System.out.printf("%s %s %s 2 \n", currentDistance, bridge.getDistance(), currentStrand);
+                break;
+            }
+            flag = candidates != 0;
+        }
+
+        movementPoints.add(Canvas.CENTER);
+        Collections.reverse(movementPoints);
+
+        return movementPoints;
+    }
+
+    public void moveSpiderTo(int targetStrand) {
+        spider.moveTo(getShortestWay(targetStrand));
+    }
 
     public SpiderWeb(int strands, int radio) {
         this.strands = strands;
