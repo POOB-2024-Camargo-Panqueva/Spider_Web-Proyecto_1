@@ -48,7 +48,7 @@ public final class SpiderWeb {
         }
     }
 
-    public void addBridge(String color, int distance, int firstStrand) {
+    public void addBridge(String color, int distance, int firstStrand) throws IllegalArgumentException, IllegalStateException{
         if (firstStrand < 0 || firstStrand >= this.strands) {
             throw new IllegalArgumentException("Invalid first strand");
         }
@@ -59,7 +59,7 @@ public final class SpiderWeb {
             throw new IllegalStateException("Spider web is not visible yet");
         }
 
-        int finalStrand = (firstStrand + 1) % this.strands;
+        int finalStrand = firstStrand + 1;
         Point initialPoint = this.strandLines.get(firstStrand).getScaledPoint((double) distance / this.radio);
         Point finalPoint = this.strandLines.get(finalStrand).getScaledPoint((double) distance / this.radio);
 
