@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Function;
 
@@ -100,7 +101,7 @@ public class Spider {
      *
      * @param positions An array of points representing the positions to which the spider will move.
      */
-    public void moveTo(Point[] positions) {
+    public void moveTo(ArrayList<Point> positions) {
         for (Point position : positions) {
             this.moveTo(position);
         }
