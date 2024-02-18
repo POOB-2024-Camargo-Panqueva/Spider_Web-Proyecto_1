@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 
 public class Spider {
 
@@ -19,10 +18,5 @@ public class Spider {
         double yDraw = position.getY() - (double) HEIGHT / 2;
 
         canvas.draw(this, "black", new Ellipse2D.Double(xDraw, yDraw, WIDTH, HEIGHT));
-    }
-
-    public void move(int x, int y) {
-        this.position.setLocation(this.position.getX() + x, this.position.getY() + y);
-        this.draw();
     }
 }
