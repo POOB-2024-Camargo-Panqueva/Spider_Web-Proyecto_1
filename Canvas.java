@@ -137,7 +137,7 @@ public class Canvas {
             case "green" -> graphic.setColor(new Color(86, 203, 86));
             case "magenta" -> graphic.setColor(new Color(213, 89, 213));
             case "white" -> graphic.setColor(new Color(255, 255, 255));
-            case "gray" -> graphic.setColor(new Color(128, 128, 128));
+            case "gray" -> graphic.setColor(new Color(150, 150, 150));
             default -> graphic.setColor(new Color(0, 0, 0));
         }
     }

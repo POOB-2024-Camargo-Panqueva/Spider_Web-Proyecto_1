@@ -54,4 +54,8 @@ public final class Bridge {
     public Point getFinalPoint() {
         return finalPoint;
     }
+
+    public String toString() {
+        return String.format("Initial Strand: %d, Final Strand: %d, Distance: %d, Color: %s", initialStrand, finalStrand, distance, color);
+    }
 }

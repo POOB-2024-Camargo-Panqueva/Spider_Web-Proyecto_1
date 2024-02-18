@@ -34,4 +34,8 @@ public class Spider {
         }
         return result;
     }
+
+    public Point getPosition() {
+        return position;
+    }
 }

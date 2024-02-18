@@ -53,6 +53,21 @@ public final class SpiderWeb {
         }
     }
 
+    public void showWebInfo() {
+        StringBuilder info = new StringBuilder();
+
+        info.append(String.format("The spider is at the point [%s, %s]\n", this.spider.getPosition().x, this.spider.getPosition().y));
+        info.append(String.format("The spider web has %d strands\n", this.strands));
+        info.append(String.format("The spider web has a radio of %d\n", this.radio));
+        info.append(String.format("The spider web has %d bridges\n", this.bridges.size()));
+
+        for (int i = 0; i < this.bridges.size(); i++) {
+            info.append(String.format("    + Bridge %d: %s\n", i + 1, this.bridges.get(i)));
+        }
+
+        MessageHandler.showInfo(info.toString());
+    }
+
     public void addBridge(String color, int distance, int firstStrand) {
         if (firstStrand < 0 || firstStrand >= this.strands) {
             MessageHandler.showError("Invalid strand", "The strand " + firstStrand + " is not valid");
@@ -120,7 +135,12 @@ public final class SpiderWeb {
 
         if (result != null) {
             MessageHandler.showError("The new strand cannot be added", "already exist a strand with color: " + color);
+            return;
         }
+
+        this.strandLines.get(strand).setColor(color);
+
+        this.draw();
     }
 
     public void removeFavoriteStrand(String color) {
@@ -131,7 +151,9 @@ public final class SpiderWeb {
             return;
         }
 
-        MessageHandler.showInfo("The Strand " + color + "was deleted");
+        MessageHandler.showInfo("The Strand " + color + " was deleted");
+
+        this.draw();
     }
 
     public void finish() {
