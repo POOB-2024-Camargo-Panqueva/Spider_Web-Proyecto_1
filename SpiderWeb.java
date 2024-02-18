@@ -39,6 +39,12 @@ public final class SpiderWeb {
         this.draw();
     }
 
+    public void makeInvisible() {
+        this.isVisible = false;
+        Canvas canvas = Canvas.getCanvas();
+        canvas.setVisible(false);
+    }
+
     private void draw() {
         if (this.isVisible) {
             this.strandLines.forEach(Line::draw);
@@ -126,5 +132,14 @@ public final class SpiderWeb {
         }
 
         MessageHandler.showInfo("The Strand " + color + "was deleted");
+    }
+
+    public void finish() {
+        Canvas canvas = Canvas.getCanvas();
+        canvas.setVisible(false);
+
+        MessageHandler.showInfo("The spider web is finished");
+
+        System.exit(0);
     }
 }
