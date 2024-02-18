@@ -45,19 +45,20 @@ public final class SpiderWeb {
             this.bridges.forEach(Bridge::draw);
             this.spider.draw();
         }
-
-        System.out.println(this.bridges.size() + " bridges");
     }
 
-    public void addBridge(String color, int distance, int firstStrand) throws IllegalArgumentException, IllegalStateException {
+    public void addBridge(String color, int distance, int firstStrand) {
         if (firstStrand < 0 || firstStrand >= this.strands) {
-            throw new IllegalArgumentException("Invalid first strand");
+            MessageHandler.showError("Invalid strand", "The strand " + firstStrand + " is not valid");
+            return;
         }
         if (distance < 0 | distance > radio) {
-            throw new IllegalArgumentException("Invalid distance");
+            MessageHandler.showError("Invalid distance", "The distance " + distance + " is not valid");
+            return;
         }
         if (!this.isVisible) {
-            throw new IllegalStateException("Spider web is not visible yet");
+            MessageHandler.showError("Spider web is not visible yet", "The spider web is not visible yet");
+            return;
         }
 
         int finalStrand = firstStrand + 1;
@@ -82,8 +83,7 @@ public final class SpiderWeb {
         }
 
         if (targetBridge == null) {
-            //TODO: throw exception and show message with JOptionPane
-            System.out.println("Bridge not found");
+            MessageHandler.showError("Bridge not found", "The bridge with color: " + color + " was not found");
             return;
         }
 
@@ -102,8 +102,7 @@ public final class SpiderWeb {
         }
 
         if (targetBridge == null) {
-            //TODO: throw exception and show message with JOptionPane
-            System.out.println("Bridge not found");
+            MessageHandler.showError("Bridge not found", "The bridge with color: " + color + " was not found");
             return;
         }
 

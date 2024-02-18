@@ -18,6 +18,7 @@ public final class Line {
 
     public Point getScaledPoint(double scale) {
         if (scale < 0 || scale > 1) {
+            //TODO: Check if this throws an exception or show a message
             throw new IllegalArgumentException("Invalid scale");
         }
 
