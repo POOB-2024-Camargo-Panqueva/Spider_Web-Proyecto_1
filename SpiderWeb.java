@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Set;
 
 public final class SpiderWeb {
 
@@ -150,6 +151,13 @@ public final class SpiderWeb {
 
         for (int i = 0; i < this.bridges.size(); i++) {
             info.append(String.format("    + Bridge %d: %s\n", i + 1, this.bridges.get(i)));
+        }
+
+        info.append(String.format("The spider web has %d favorite strands\n", this.spider.getFavoriteStrands().size()));
+        Set<String> favoriteStrands = this.spider.getFavoriteStrands().keySet();
+
+        for (String color : favoriteStrands) {
+            info.append(String.format("    + Favorite Strand (%s): %s\n", color, this.spider.getFavoriteStrands().get(color)));
         }
 
         MessageHandler.showInfo(info.toString());

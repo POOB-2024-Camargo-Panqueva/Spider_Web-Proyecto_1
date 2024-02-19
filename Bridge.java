@@ -13,12 +13,12 @@ public final class Bridge {
     /**
      * Constructs a new instance of Bridge with the specified parameters.
      *
-     * @param distance       The distance of the bridge.
-     * @param initialStrand  The initial strand connected by the bridge.
-     * @param finalStrand    The final strand connected by the bridge.
-     * @param initialPoint   The initial point of the bridge.
-     * @param finalPoint     The final point of the bridge.
-     * @param color          The color of the bridge.
+     * @param distance      The distance of the bridge.
+     * @param initialStrand The initial strand connected by the bridge.
+     * @param finalStrand   The final strand connected by the bridge.
+     * @param initialPoint  The initial point of the bridge.
+     * @param finalPoint    The final point of the bridge.
+     * @param color         The color of the bridge.
      */
     public Bridge(int distance, int initialStrand, int finalStrand, Point initialPoint, Point finalPoint, String color) {
         this.distance = distance;

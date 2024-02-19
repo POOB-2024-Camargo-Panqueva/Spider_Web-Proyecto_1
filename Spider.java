@@ -115,4 +115,8 @@ public class Spider {
         this.position = position;
         this.draw();
     }
+
+    public HashMap<String, Integer> getFavoriteStrands() {
+        return favoriteStrands;
+    }
 }
