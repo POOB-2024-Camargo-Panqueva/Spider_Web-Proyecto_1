@@ -33,6 +33,8 @@ public class Spider {
         double yDraw = position.getY() - (double) HEIGHT / 2;
 
         canvas.draw(this, "black", new Ellipse2D.Double(xDraw, yDraw, WIDTH, HEIGHT));
+        canvas.draw(this + "leftEye", "red", new Ellipse2D.Double(xDraw + 5, yDraw + 5, 5, 5));
+        canvas.draw(this + "rightEye", "red", new Ellipse2D.Double(xDraw + 20, yDraw + 5, 5, 5));
     }
 
     /**
@@ -90,7 +92,6 @@ public class Spider {
 
             this.draw();
 
-            //TODO: Implements constant speed
             parameter += STEP;
         }
     }

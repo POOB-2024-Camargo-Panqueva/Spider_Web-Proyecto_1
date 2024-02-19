@@ -12,6 +12,7 @@ public final class SpiderWeb {
     private final int strands;
     private final int radio;
 
+    private boolean lastActionWasOk;
     private boolean isVisible;
     private int currentStrand;
 
@@ -74,11 +75,13 @@ public final class SpiderWeb {
 
         if (targetStrand < 0 || targetStrand >= this.strands) {
             MessageHandler.showError("Invalid strand", "The strand " + targetStrand + " is not valid");
+            lastActionWasOk = false;
             return;
         }
 
         if (this.currentStrand != -1) {
             MessageHandler.showInfo("The spider isn't on the center, please relocate the spider on the center");
+            lastActionWasOk = false;
             return;
         }
 
@@ -87,11 +90,14 @@ public final class SpiderWeb {
 
         this.spider.moveTo(movementPoints);
         this.currentStrand = targetStrand;
+
+        lastActionWasOk = true;
     }
 
     public void moveSpiderToCenter() {
         if (this.currentStrand == -1) {
             MessageHandler.showInfo("The spider is already on the center");
+            lastActionWasOk = false;
             return;
         }
 
@@ -99,19 +105,24 @@ public final class SpiderWeb {
 
         this.spider.moveTo(movementPoints);
         this.currentStrand = -1;
+
+        lastActionWasOk = true;
     }
 
     public void sitSpiderOnCenter() {
         if (this.currentStrand == -1) {
             MessageHandler.showInfo("The spider is already on the center");
+            lastActionWasOk = false;
             return;
         }
 
         this.spider.setPosition(new Point(Canvas.CENTER));
         this.currentStrand = -1;
+
+        lastActionWasOk = true;
     }
 
-    public void generateStrandLines() {
+    private void generateStrandLines() {
         for (int index = this.strands; index >= 0; index--) {
             double angle = Math.toRadians((double) 360 / this.strands * index);
             int x = (int) (this.radio * Math.cos(angle));
@@ -123,12 +134,16 @@ public final class SpiderWeb {
     public void makeVisible() {
         this.isVisible = true;
         this.draw();
+
+        lastActionWasOk = true;
     }
 
     public void makeInvisible() {
         this.isVisible = false;
         Canvas canvas = Canvas.getCanvas();
         canvas.setVisible(false);
+
+        lastActionWasOk = true;
     }
 
     private void draw() {
@@ -161,19 +176,24 @@ public final class SpiderWeb {
         }
 
         MessageHandler.showInfo(info.toString());
+
+        lastActionWasOk = true;
     }
 
     public void addBridge(String color, int distance, int firstStrand) {
         if (firstStrand < 0 || firstStrand >= this.strands) {
             MessageHandler.showError("Invalid strand", "The strand " + firstStrand + " is not valid");
+            lastActionWasOk = false;
             return;
         }
         if (distance < 0 | distance > radio) {
             MessageHandler.showError("Invalid distance", "The distance " + distance + " is not valid");
+            lastActionWasOk = false;
             return;
         }
         if (!this.isVisible) {
             MessageHandler.showError("Spider web is not visible yet", "The spider web is not visible yet");
+            lastActionWasOk = false;
             return;
         }
 
@@ -184,6 +204,8 @@ public final class SpiderWeb {
         this.bridges.add(new Bridge(distance, firstStrand, finalStrand, initialPoint, finalPoint, color));
 
         this.draw();
+
+        lastActionWasOk = true;
     }
 
     public void relocateBridge(String color, int distance) {
@@ -200,10 +222,13 @@ public final class SpiderWeb {
 
         if (targetBridge == null) {
             MessageHandler.showError("Bridge not found", "The bridge with color: " + color + " was not found");
+            lastActionWasOk = false;
             return;
         }
 
         this.addBridge(color, distance, targetBridge.getInitialStrand());
+
+        lastActionWasOk = true;
     }
 
     public void removeBridge(String color) {
@@ -219,10 +244,13 @@ public final class SpiderWeb {
 
         if (targetBridge == null) {
             MessageHandler.showError("Bridge not found", "The bridge with color: " + color + " was not found");
+            lastActionWasOk = false;
             return;
         }
 
         this.draw();
+
+        lastActionWasOk = true;
     }
 
     public void addFavoriteStrand(String color, Integer strand) {
@@ -230,10 +258,14 @@ public final class SpiderWeb {
 
         if (result != null) {
             MessageHandler.showError("The new strand cannot be added", "already exist a strand with color: " + color);
+
+            lastActionWasOk = false;
             return;
         }
 
         this.strandLines.get(strand).setColor(color);
+
+        lastActionWasOk = false;
     }
 
     public void removeFavoriteStrand(String color) {
@@ -241,11 +273,18 @@ public final class SpiderWeb {
 
         if (result == null) {
             MessageHandler.showError("Nothing was found to delete", "");
+            lastActionWasOk = false;
             return;
         }
 
         this.strandLines.get(result).setColor("gray");
         MessageHandler.showInfo("The Strand " + color + " was deleted");
+
+        lastActionWasOk = true;
+    }
+
+    public boolean lastActionWasOk() {
+        return lastActionWasOk;
     }
 
     public void finish() {
@@ -253,6 +292,7 @@ public final class SpiderWeb {
         canvas.setVisible(false);
 
         MessageHandler.showInfo("The spider web is finished");
+        lastActionWasOk = true;
 
         System.exit(0);
     }
