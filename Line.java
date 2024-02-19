@@ -41,6 +41,11 @@ public final class Line {
         canvas.draw(this, this.color, new Line2D.Double(start.getX(), start.getY(), end.getX(), end.getY()));
     }
 
+    public void erase() {
+        Canvas canvas = Canvas.getCanvas();
+        canvas.erase(this);
+    }
+
     /**
      * Gets a point on the line at a specified scale between 0 and 1.
      *

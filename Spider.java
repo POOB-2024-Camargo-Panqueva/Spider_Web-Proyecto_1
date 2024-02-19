@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ public class Spider {
     private final int WIDTH = 30;
     private final int HEIGHT = 24;
     private final HashMap<String, Integer> favoriteStrands;
+    private final ArrayList<Line> traceLines;
 
     private Point position;
 
@@ -20,7 +22,8 @@ public class Spider {
      */
     public Spider(Point position) {
         this.position = position;
-        favoriteStrands = new HashMap<>();
+        this.favoriteStrands = new HashMap<>();
+        this.traceLines = new ArrayList<>();
     }
 
     /**
@@ -35,6 +38,10 @@ public class Spider {
         canvas.draw(this, "black", new Ellipse2D.Double(xDraw, yDraw, WIDTH, HEIGHT));
         canvas.draw(this + "leftEye", "red", new Ellipse2D.Double(xDraw + 5, yDraw + 5, 5, 5));
         canvas.draw(this + "rightEye", "red", new Ellipse2D.Double(xDraw + 20, yDraw + 5, 5, 5));
+
+        for (Line line : traceLines) {
+            line.draw();
+        }
     }
 
     /**
@@ -75,6 +82,7 @@ public class Spider {
 
         Point2D.Double director = new Point2D.Double(newPosition.getX() - position.getX(), newPosition.getY() - position.getY());
         Point initialPosition = new Point((int) position.getX(), (int) position.getY());
+        Canvas canvas = Canvas.getCanvas();
 
         Function<Double, Point> lineFunction = (Double t) -> {
             int x = (int) (initialPosition.getX() + t * director.x);
@@ -87,13 +95,19 @@ public class Spider {
         while (parameter < 1) {
             this.position = lineFunction.apply(parameter);
 
-            Canvas canvas = Canvas.getCanvas();
             canvas.wait(16);
-
             this.draw();
+            canvas.draw(this + "currentLine", "red", new Line2D.Double(initialPosition.getX(), initialPosition.getY(), position.getX(), position.getY()));
 
             parameter += STEP;
         }
+
+        if (parameter > 1) {
+            this.position = newPosition;
+            this.draw();
+        }
+
+        this.traceLines.add(new Line(initialPosition, newPosition, "red"));
     }
 
     /**
@@ -119,5 +133,12 @@ public class Spider {
 
     public HashMap<String, Integer> getFavoriteStrands() {
         return favoriteStrands;
+    }
+
+    public void resetTraceLines() {
+        for (Line line : traceLines) {
+            line.erase();
+        }
+        traceLines.clear();
     }
 }

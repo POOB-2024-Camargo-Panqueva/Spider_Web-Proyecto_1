@@ -73,6 +73,8 @@ public final class SpiderWeb {
 
     public void moveSpiderTo(int targetStrand) {
 
+        this.spider.resetTraceLines();
+
         if (targetStrand < 0 || targetStrand >= this.strands) {
             MessageHandler.showError("Invalid strand", "The strand " + targetStrand + " is not valid");
             lastActionWasOk = false;
@@ -95,6 +97,9 @@ public final class SpiderWeb {
     }
 
     public void moveSpiderToCenter() {
+
+        this.spider.resetTraceLines();
+
         if (this.currentStrand == -1) {
             MessageHandler.showInfo("The spider is already on the center");
             lastActionWasOk = false;
@@ -110,6 +115,9 @@ public final class SpiderWeb {
     }
 
     public void sitSpiderOnCenter() {
+
+        this.spider.resetTraceLines();
+
         if (this.currentStrand == -1) {
             MessageHandler.showInfo("The spider is already on the center");
             lastActionWasOk = false;
