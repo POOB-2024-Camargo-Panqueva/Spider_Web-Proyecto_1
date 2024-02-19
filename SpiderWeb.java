@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 public final class SpiderWeb {
@@ -13,20 +12,33 @@ public final class SpiderWeb {
     private final int radio;
 
     private boolean isVisible;
+    private int currentStrand;
+
+    public SpiderWeb(int strands, int radio) {
+        this.strands = strands;
+        this.radio = radio;
+        this.currentStrand = -1;
+
+        this.isVisible = false;
+
+        this.spider = new Spider(new Point(Canvas.CENTER));
+        this.strandLines = new ArrayList<>(this.strands);
+        this.bridges = new ArrayList<>();
+
+        this.generateStrandLines();
+    }
 
     private ArrayList<Point> getShortestWay(int targetStrand) {
         bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
+
         ArrayList<Point> movementPoints = new ArrayList<>();
-        movementPoints.add(strandLines.get(targetStrand).getEnd());
         boolean flag = true;
         int currentStrand = targetStrand;
         int currentDistance = this.radio;
 
-        while (flag) {
-            if (bridges.isEmpty()) {
-                //TODO : how to identify the Strand by its number
-            }
+        movementPoints.add(strandLines.get(targetStrand).getEnd());
 
+        while (flag) {
             int candidates = 0;
 
             for (Bridge bridge : bridges) {
@@ -40,42 +52,62 @@ public final class SpiderWeb {
                     movementPoints.add(bridge.getInitialPoint());
                     currentStrand = bridge.getInitialStrand();
                     currentDistance = bridge.getDistance();
-
-                    System.out.printf("%s %s %s 1 \n", currentDistance, bridge.getDistance(), currentStrand);
                     break;
+                } else {
+                    movementPoints.add(bridge.getInitialPoint());
+                    movementPoints.add(bridge.getFinalPoint());
+                    currentStrand = bridge.getFinalStrand();
+                    currentDistance = bridge.getDistance();
                 }
-                movementPoints.add(bridge.getInitialPoint());
-                movementPoints.add(bridge.getFinalPoint());
-                currentStrand = bridge.getFinalStrand();
-                currentDistance = bridge.getDistance();
-
-                System.out.printf("%s %s %s 2 \n", currentDistance, bridge.getDistance(), currentStrand);
-                break;
             }
+
             flag = candidates != 0;
         }
 
         movementPoints.add(Canvas.CENTER);
-        Collections.reverse(movementPoints);
 
         return movementPoints;
     }
 
     public void moveSpiderTo(int targetStrand) {
-        spider.moveTo(getShortestWay(targetStrand));
+
+        if (targetStrand < 0 || targetStrand >= this.strands) {
+            MessageHandler.showError("Invalid strand", "The strand " + targetStrand + " is not valid");
+            return;
+        }
+
+        if (this.currentStrand != -1) {
+            MessageHandler.showInfo("The spider isn't on the center, please relocate the spider on the center");
+            return;
+        }
+
+        ArrayList<Point> movementPoints = this.getShortestWay(targetStrand);
+        Collections.reverse(movementPoints);
+
+        this.spider.moveTo(movementPoints);
+        this.currentStrand = targetStrand;
     }
 
-    public SpiderWeb(int strands, int radio) {
-        this.strands = strands;
-        this.radio = radio;
+    public void moveSpiderToCenter() {
+        if (this.currentStrand == -1) {
+            MessageHandler.showInfo("The spider is already on the center");
+            return;
+        }
 
-        this.isVisible = false;
+        ArrayList<Point> movementPoints = this.getShortestWay(this.currentStrand);
 
-        this.spider = new Spider(new Point(Canvas.CENTER));
-        this.strandLines = new ArrayList<>(this.strands);
-        this.bridges = new ArrayList<>();
+        this.spider.moveTo(movementPoints);
+        this.currentStrand = -1;
+    }
 
-        this.generateStrandLines();
+    public void sitSpiderOnCenter() {
+        if (this.currentStrand == -1) {
+            MessageHandler.showInfo("The spider is already on the center");
+            return;
+        }
+
+        this.spider.setPosition(new Point(Canvas.CENTER));
+        this.currentStrand = -1;
     }
 
     public void generateStrandLines() {
@@ -110,6 +142,8 @@ public final class SpiderWeb {
         StringBuilder info = new StringBuilder();
 
         info.append(String.format("The spider is at the point [%s, %s]\n", this.spider.getPosition().x, this.spider.getPosition().y));
+        info.append(String.format("The spider is at the strand %d\n", this.currentStrand));
+        info.append(String.format("The spider web is %s\n", this.isVisible ? "visible" : "invisible"));
         info.append(String.format("The spider web has %d strands\n", this.strands));
         info.append(String.format("The spider web has a radio of %d\n", this.radio));
         info.append(String.format("The spider web has %d bridges\n", this.bridges.size()));

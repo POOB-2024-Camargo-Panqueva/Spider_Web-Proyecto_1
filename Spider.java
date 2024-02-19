@@ -7,8 +7,6 @@ import java.util.function.Function;
 
 public class Spider {
 
-    private final double STEP = (double) 1 / 100;
-
     private final int WIDTH = 30;
     private final int HEIGHT = 24;
     private final HashMap<String, Integer> favoriteStrands;
@@ -71,6 +69,8 @@ public class Spider {
      * @param newPosition The new position to which the spider will move.
      */
     public void moveTo(Point newPosition) {
+        final double STEP = (double) 1 / getPosition().distance(newPosition);
+
         Point2D.Double director = new Point2D.Double(newPosition.getX() - position.getX(), newPosition.getY() - position.getY());
         Point initialPosition = new Point((int) position.getX(), (int) position.getY());
 
@@ -109,5 +109,10 @@ public class Spider {
 
     public Point getPosition() {
         return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
+        this.draw();
     }
 }
