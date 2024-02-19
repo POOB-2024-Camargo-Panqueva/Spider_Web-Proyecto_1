@@ -16,6 +16,12 @@ public final class SpiderWeb {
     private boolean isVisible;
     private int currentStrand;
 
+    /**
+     * Constructs a SpiderWeb with the specified number of strands and radio.
+     *
+     * @param strands The number of strands in the spider web.
+     * @param radio   The radius of the spider web.
+     */
     public SpiderWeb(int strands, int radio) {
         this.strands = strands;
         this.radio = radio;
@@ -30,6 +36,12 @@ public final class SpiderWeb {
         this.generateStrandLines();
     }
 
+    /**
+     * Gets the shortest way to the target strand, considering bridges.
+     *
+     * @param targetStrand The target strand to which the spider will move.
+     * @return ArrayList of Points representing the movement points.
+     */
     private ArrayList<Point> getShortestWay(int targetStrand) {
         bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
 
@@ -71,6 +83,11 @@ public final class SpiderWeb {
         return movementPoints;
     }
 
+    /**
+     * Moves the spider to the specified strand.
+     *
+     * @param targetStrand The target strand to which the spider will move.
+     */
     public void moveSpiderTo(int targetStrand) {
 
         this.spider.resetTraceLines();
@@ -96,6 +113,9 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    /**
+     * Moves the spider back to the center of the spider web.
+     */
     public void moveSpiderToCenter() {
 
         this.spider.resetTraceLines();
@@ -114,6 +134,9 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    /**
+     * Sits the spider on the center of the spider web.
+     */
     public void sitSpiderOnCenter() {
 
         this.spider.resetTraceLines();
@@ -130,6 +153,9 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    /**
+     * Generates strand lines based on the number of strands.
+     */
     private void generateStrandLines() {
         for (int index = this.strands; index >= 0; index--) {
             double angle = Math.toRadians((double) 360 / this.strands * index);
@@ -139,6 +165,9 @@ public final class SpiderWeb {
         }
     }
 
+    /**
+     * Makes the spider web visible.
+     */
     public void makeVisible() {
         this.isVisible = true;
         this.draw();
@@ -146,6 +175,9 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    /**
+     * Makes the spider web invisible.
+     */
     public void makeInvisible() {
         this.isVisible = false;
         Canvas canvas = Canvas.getCanvas();
@@ -154,6 +186,9 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    /**
+     * Draws the spider web, including strands, bridges, and the spider.
+     */
     private void draw() {
         if (this.isVisible) {
             this.strandLines.forEach(Line::draw);
@@ -162,6 +197,9 @@ public final class SpiderWeb {
         }
     }
 
+    /**
+     * Displays information about the spider web using a pop-up message.
+     */
     public void showWebInfo() {
         StringBuilder info = new StringBuilder();
 
@@ -188,6 +226,13 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    /**
+     * Adds a bridge to the spider web with the specified color, distance, and initial strand.
+     *
+     * @param color        The color of the bridge.
+     * @param distance     The distance of the bridge.
+     * @param firstStrand  The initial strand of the bridge.
+     */
     public void addBridge(String color, int distance, int firstStrand) {
         if (firstStrand < 0 || firstStrand >= this.strands) {
             MessageHandler.showError("Invalid strand", "The strand " + firstStrand + " is not valid");
@@ -216,6 +261,12 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    /**
+     * Relocates a bridge with the specified color and updates its distance.
+     *
+     * @param color    The color of the bridge to relocate.
+     * @param distance The new distance of the bridge.
+     */
     public void relocateBridge(String color, int distance) {
 
         Bridge targetBridge = null;
@@ -239,6 +290,11 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    /**
+     * Removes a bridge with the specified color from the spider web.
+     *
+     * @param color The color of the bridge to remove.
+     */
     public void removeBridge(String color) {
         Bridge targetBridge = null;
 
@@ -261,6 +317,12 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    /**
+     * Adds a favorite strand to the spider associated with the specified color and strand.
+     *
+     * @param color  The color of the favorite strand.
+     * @param strand The value of the favorite strand.
+     */
     public void addFavoriteStrand(String color, Integer strand) {
         Integer result = spider.addFavoriteStrand(color, strand);
 
@@ -276,6 +338,11 @@ public final class SpiderWeb {
         lastActionWasOk = false;
     }
 
+    /**
+     * Removes a favorite strand from the spider based on the specified color.
+     *
+     * @param color The color of the favorite strand to remove.
+     */
     public void removeFavoriteStrand(String color) {
         Integer result = spider.removeFavoriteStrand(color);
 
@@ -295,6 +362,9 @@ public final class SpiderWeb {
         return lastActionWasOk;
     }
 
+    /**
+     * Finishes the spider web application, hides the canvas, and shows a closing message.
+     */
     public void finish() {
         Canvas canvas = Canvas.getCanvas();
         canvas.setVisible(false);
