@@ -93,13 +93,17 @@ public final class SpiderWeb {
         this.spider.resetTraceLines();
 
         if (targetStrand < 0 || targetStrand >= this.strands) {
-            MessageHandler.showError("Invalid strand", "The strand " + targetStrand + " is not valid");
+
+            if (isVisible)
+                MessageHandler.showError("Invalid strand", "The strand " + targetStrand + " is not valid");
             lastActionWasOk = false;
             return;
         }
 
         if (this.currentStrand != -1) {
-            MessageHandler.showInfo("The spider isn't on the center, please relocate the spider on the center");
+
+            if (isVisible)
+                MessageHandler.showInfo("The spider isn't on the center, please relocate the spider on the center");
             lastActionWasOk = false;
             return;
         }
@@ -121,7 +125,10 @@ public final class SpiderWeb {
         this.spider.resetTraceLines();
 
         if (this.currentStrand == -1) {
-            MessageHandler.showInfo("The spider is already on the center");
+
+            if (isVisible)
+                MessageHandler.showInfo("The spider is already on the center");
+
             lastActionWasOk = false;
             return;
         }
@@ -135,14 +142,17 @@ public final class SpiderWeb {
     }
 
     /**
-     * Sits the spider on the center of the spider web.
+     * Sits the spider in the center of the spider web.
      */
     public void sitSpiderOnCenter() {
 
         this.spider.resetTraceLines();
 
         if (this.currentStrand == -1) {
-            MessageHandler.showInfo("The spider is already on the center");
+
+            if (isVisible)
+                MessageHandler.showInfo("The spider is already on the center");
+
             lastActionWasOk = false;
             return;
         }
@@ -229,23 +239,36 @@ public final class SpiderWeb {
     /**
      * Adds a bridge to the spider web with the specified color, distance, and initial strand.
      *
-     * @param color        The color of the bridge.
-     * @param distance     The distance of the bridge.
-     * @param firstStrand  The initial strand of the bridge.
+     * @param color       The color of the bridge.
+     * @param distance    The distance of the bridge.
+     * @param firstStrand The initial strand of the bridge.
      */
     public void addBridge(String color, int distance, int firstStrand) {
         if (firstStrand < 0 || firstStrand >= this.strands) {
-            MessageHandler.showError("Invalid strand", "The strand " + firstStrand + " is not valid");
+
+            if (isVisible)
+                MessageHandler.showError("Invalid strand", "The strand " + firstStrand + " is not valid");
+
             lastActionWasOk = false;
             return;
         }
-        if (distance < 0 | distance > radio) {
-            MessageHandler.showError("Invalid distance", "The distance " + distance + " is not valid");
+        if (distance < 0 || distance > radio) {
+
+            if (isVisible)
+                MessageHandler.showError("Invalid distance", "The distance " + distance + " is not valid");
+
+            lastActionWasOk = false;
+            return;
+        }
+        if (this.bridges.stream().anyMatch(bridge -> bridge.getColor().equals(color))) {
+
+            if (isVisible)
+                MessageHandler.showError("The bridge already exists", "The bridge with color " + color + " already exists");
+
             lastActionWasOk = false;
             return;
         }
         if (!this.isVisible) {
-            MessageHandler.showError("Spider web is not visible yet", "The spider web is not visible yet");
             lastActionWasOk = false;
             return;
         }
@@ -280,7 +303,10 @@ public final class SpiderWeb {
         }
 
         if (targetBridge == null) {
-            MessageHandler.showError("Bridge not found", "The bridge with color: " + color + " was not found");
+
+            if (isVisible)
+                MessageHandler.showError("Bridge not found", "The bridge with color: " + color + " was not found");
+
             lastActionWasOk = false;
             return;
         }
@@ -307,7 +333,10 @@ public final class SpiderWeb {
         }
 
         if (targetBridge == null) {
-            MessageHandler.showError("Bridge not found", "The bridge with color: " + color + " was not found");
+
+            if (isVisible)
+                MessageHandler.showError("Bridge not found", "The bridge with color: " + color + " was not found");
+
             lastActionWasOk = false;
             return;
         }
@@ -327,7 +356,9 @@ public final class SpiderWeb {
         Integer result = spider.addFavoriteStrand(color, strand);
 
         if (result != null) {
-            MessageHandler.showError("The new strand cannot be added", "already exist a strand with color: " + color);
+
+            if (isVisible)
+                MessageHandler.showError("The new strand cannot be added", "already exist a strand with color: " + color);
 
             lastActionWasOk = false;
             return;
@@ -347,7 +378,10 @@ public final class SpiderWeb {
         Integer result = spider.removeFavoriteStrand(color);
 
         if (result == null) {
-            MessageHandler.showError("Nothing was found to delete", "");
+
+            if (isVisible)
+                MessageHandler.showError("Nothing was found to delete", "");
+
             lastActionWasOk = false;
             return;
         }
