@@ -102,7 +102,7 @@ public class Spider {
             parameter += STEP;
         }
 
-        if (parameter > 1) {
+        if (parameter != 1) {
             this.position = newPosition;
             this.draw();
         }
