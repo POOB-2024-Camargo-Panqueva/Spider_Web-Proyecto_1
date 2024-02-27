@@ -1,7 +1,8 @@
+import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
+import java.util.List;
+import java.util.stream.IntStream;
 
 public final class SpiderWeb {
 
@@ -408,4 +409,82 @@ public final class SpiderWeb {
 
         System.exit(0);
     }
+
+    public void builder(String input) {
+        if (input.isEmpty()) {
+            MessageHandler.showError("Enter a Valid String!");
+            return;
+        }
+
+        String[] commands = input.strip().split("\n");
+
+        int numOfStrands, numOfBridges = 0, numOfFavoriteStrands;
+
+        try {
+            int[] firstCommand = Arrays.stream(commands[0].split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+
+            if (firstCommand.length != 3) {
+                MessageHandler.showError("Enter a Valid String! in the form: 'n m s'");
+                return;
+            }
+
+            numOfStrands = firstCommand[0];
+            numOfBridges = firstCommand[1];
+            numOfFavoriteStrands = firstCommand[2];
+
+            if (numOfStrands < 3 || 200000 < numOfStrands) {
+                MessageHandler.showError("Invalid Range for 'n' number of strands");
+                return;
+            }
+            if (numOfBridges < 0 || 500000 < numOfBridges) {
+                MessageHandler.showError("Invalid Range for 'm' number of bridges");
+                return;
+            }
+            if (numOfFavoriteStrands < 0 || numOfStrands < numOfFavoriteStrands) {
+                MessageHandler.showError("Invalid Range for 's' favorite strands");
+                return;
+            }
+        } catch (Exception e) {
+            MessageHandler.showError("Ocurrió un error ", "Error: " + e);
+            return;
+        }
+
+        if (numOfBridges != commands.length - 1) {
+            MessageHandler.showError(String.format("Number of Bridges Must Be: %s", numOfBridges), "'number of bridges' must match the bridges that were added");
+            return;
+        }
+
+        //TODO: Create spider web with numOfStrands, numOfBridges and favoriteStrands, what with color??? for favoriteStrand
+
+        for (int index = 1; index < commands.length; index++) {
+            int[] bridgeCommand = Arrays.stream(commands[index].strip().split(" "))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+
+            if (bridgeCommand.length != 2) {
+                MessageHandler.showError("Enter a Valid String! in the form: 'd t'");
+                return;
+            }
+
+            int radioBridge = bridgeCommand[0];
+            int initialStrand = bridgeCommand[1];
+
+            if (initialStrand < 0 || initialStrand > numOfStrands) {
+                MessageHandler.showError("The bridge must be built on valid strand");
+                return;
+            }
+            if (radioBridge < 1 || radioBridge > 1000000000){
+                MessageHandler.showError("Invalid Range for 'd' radio bridge");
+            }
+
+            //TODO: here verify that all radio bridges are different
+
+            //TODO: add bridges with radio and initial strand, what with color???
+
+        }
+
+    }
+
 }
