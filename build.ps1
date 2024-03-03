@@ -13,9 +13,10 @@ if (-not (Test-Path $newFolderPath)) {
     New-Item -ItemType Directory -Path $newFolderPath
 }
 
-$items = Get-ChildItem -Path ".\" -Exclude $exclude
+$items_source = Get-ChildItem -Path ".\src" -Exclude $exclude
+$items_test = Get-ChildItem -Path ".\test" -Exclude $exclude
 
-foreach ($item in $items) {
+foreach ($item in $items_source + $items_test) {
     $destination = Join-Path -Path $newFolderPath -ChildPath $item.Name
     Copy-Item -Path $item.FullName -Destination $destination -Force -Recurse
 }
