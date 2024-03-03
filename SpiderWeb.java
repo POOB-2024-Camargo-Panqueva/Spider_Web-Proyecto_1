@@ -463,4 +463,36 @@ public final class SpiderWeb {
 
         System.exit(0);
     }
+
+    public ArrayList<Line> getStrandLines() {
+        return strandLines;
+    }
+
+    public ArrayList<Bridge> getBridges() {
+        return bridges;
+    }
+
+    public Spider getSpider() {
+        return spider;
+    }
+
+    public int getStrands() {
+        return strands;
+    }
+
+    public int getRadio() {
+        return radio;
+    }
+
+    public boolean isLastActionWasOk() {
+        return lastActionWasOk;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public int getCurrentStrand() {
+        return currentStrand;
+    }
 }
