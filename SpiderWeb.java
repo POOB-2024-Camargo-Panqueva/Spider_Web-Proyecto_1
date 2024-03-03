@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Set;
 
 public final class SpiderWeb {
@@ -37,6 +36,14 @@ public final class SpiderWeb {
         this.generateStrandLines();
     }
 
+    /**
+     * Constructs a SpiderWeb with the specified number of strands, favorite strands, and bridges.
+     *
+     * @param strands         The number of strands in the spider web.
+     * @param favoriteStrands The number of favorite strands in the spider web.
+     * @param bridges         The bridges in the spider web.
+     * @throws Exception If the input is invalid.
+     */
     public SpiderWeb(int strands, int favoriteStrands, int[][] bridges) throws Exception {
 
         ArrayList<Bridge> temporalBridges = new ArrayList<>();
