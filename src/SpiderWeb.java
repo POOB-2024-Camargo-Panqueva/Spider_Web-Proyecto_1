@@ -9,12 +9,12 @@ public final class SpiderWeb {
     private final ArrayList<Bridge> bridges;
     private final Spider spider;
 
-    private final int strands;
     private final int radio;
 
     private boolean lastActionWasOk;
     private boolean isVisible;
     private int currentStrand;
+    private int strands;
 
     /**
      * Constructs a SpiderWeb with the specified number of strands and radio.
@@ -175,6 +175,31 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    public void addStrand() {
+        this.strands++;
+
+        this.generateStrandLines();
+
+        if (this.currentStrand != -1)
+            this.spider.setPosition(new Point(this.strandLines.get(currentStrand).getEnd()));
+
+        ArrayList<Bridge> temporalBridges = new ArrayList<>();
+        ArrayList<Bridge> bridgesClone = new ArrayList<>(this.bridges);
+
+        for (Bridge bridge : bridgesClone) {
+            temporalBridges.add(new Bridge(bridge.getDistance(), bridge.getInitialStrand(), bridge.getFinalStrand(), null, null, bridge.getColor()));
+
+            bridge.erase();
+            this.bridges.remove(bridge);
+        }
+
+        for (Bridge bridge : temporalBridges) {
+            this.addBridge(bridge.getColor(), bridge.getDistance(), bridge.getInitialStrand());
+        }
+
+        lastActionWasOk = true;
+    }
+
     /**
      * Moves the spider back to the center of the spider web.
      */
@@ -225,6 +250,12 @@ public final class SpiderWeb {
      * Generates strand lines based on the number of strands.
      */
     private void generateStrandLines() {
+        for (Line line : this.strandLines) {
+            line.erase();
+        }
+
+        this.strandLines.clear();
+
         for (int index = this.strands; index >= 0; index--) {
             double angle = Math.toRadians((double) 360 / this.strands * index);
             int x = (int) (this.radio * Math.cos(angle));
