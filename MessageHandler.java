@@ -12,6 +12,16 @@ public abstract class MessageHandler {
     }
 
     /**
+     * Displays a fatal error message dialog with the specified message and throws an Exception.
+     *
+     * @param message The error message to display.
+     */
+    public static void showFatalError(String message) throws Exception {
+        JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
+        throw new Exception(message);
+    }
+
+    /**
      * Displays an error message dialog with the specified title and message.
      *
      * @param title   The title of the error message dialog.
@@ -19,6 +29,17 @@ public abstract class MessageHandler {
      */
     public static void showError(String title, String message) {
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * Displays a fatal error message dialog with the specified title and message and throws an Exception.
+     *
+     * @param title   The title of the error message dialog.
+     * @param message The error message to display.
+     */
+    public static void showFatalError(String title, String message) throws Exception {
+        JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
+        throw new Exception(message);
     }
 
     /**

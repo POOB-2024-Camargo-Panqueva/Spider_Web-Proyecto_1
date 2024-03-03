@@ -1,8 +1,8 @@
-import javax.swing.*;
 import java.awt.*;
-import java.util.*;
-import java.util.List;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
 
 public final class SpiderWeb {
 
@@ -35,6 +35,56 @@ public final class SpiderWeb {
         this.bridges = new ArrayList<>();
 
         this.generateStrandLines();
+    }
+
+    public SpiderWeb(int strands, int favoriteStrands, int[][] bridges) throws Exception {
+
+        ArrayList<Bridge> temporalBridges = new ArrayList<>();
+        int radio = 0;
+
+        for (int[] bridge : bridges) {
+            if (bridge.length != 2) {
+                MessageHandler.showFatalError("Enter a valid input! in the form: 'd t'");
+            }
+
+            int radioBridge = bridge[0];
+            int initialStrand = bridge[1];
+
+            if (initialStrand < 0 || initialStrand >= strands) {
+                MessageHandler.showFatalError("The bridge must be built on a valid strand");
+            }
+
+            if (radioBridge < 1 || radioBridge > 1_000_000_000) {
+                MessageHandler.showFatalError("Invalid Range for 'd' radio bridge");
+            }
+
+            if (radioBridge > radio) {
+                radio = radioBridge;
+            }
+
+            String bridgeColor = String.format("%s-%s", initialStrand, radioBridge);
+            temporalBridges.add(new Bridge(radioBridge, initialStrand, initialStrand + 1, null, null, bridgeColor));
+
+            //TODO: here verify that all radio bridges are different
+        }
+
+        final int STRAND_PADDING = 20;
+
+        this.strands = strands;
+        this.radio = radio + STRAND_PADDING;
+        this.currentStrand = -1;
+
+        this.isVisible = false;
+
+        this.spider = new Spider(new Point(Canvas.CENTER));
+        this.strandLines = new ArrayList<>(this.strands);
+        this.generateStrandLines();
+
+        this.bridges = new ArrayList<>();
+
+        for (Bridge bridge : temporalBridges) {
+            this.addBridge(bridge.getColor(), bridge.getDistance(), bridge.getInitialStrand());
+        }
     }
 
     /**
@@ -240,15 +290,16 @@ public final class SpiderWeb {
     /**
      * Adds a bridge to the spider web with the specified color, distance, and initial strand.
      *
-     * @param color       The color of the bridge.
-     * @param distance    The distance of the bridge.
-     * @param firstStrand The initial strand of the bridge.
+     * @param color         The color of the bridge.
+     * @param distance      The distance of the bridge.
+     * @param initialStrand The initial strand of the bridge.
      */
-    public void addBridge(String color, int distance, int firstStrand) {
-        if (firstStrand < 0 || firstStrand >= this.strands) {
+    public void addBridge(String color, int distance, int initialStrand) {
+
+        if (initialStrand < 0 || initialStrand >= this.strands) {
 
             if (isVisible)
-                MessageHandler.showError("Invalid strand", "The strand " + firstStrand + " is not valid");
+                MessageHandler.showError("Invalid strand", "The strand " + initialStrand + " is not valid");
 
             lastActionWasOk = false;
             return;
@@ -269,16 +320,12 @@ public final class SpiderWeb {
             lastActionWasOk = false;
             return;
         }
-        if (!this.isVisible) {
-            lastActionWasOk = false;
-            return;
-        }
 
-        int finalStrand = firstStrand + 1;
-        Point initialPoint = this.strandLines.get(firstStrand).getScaledPoint((double) distance / this.radio);
+        int finalStrand = initialStrand + 1;
+        Point initialPoint = this.strandLines.get(initialStrand).getScaledPoint((double) distance / this.radio);
         Point finalPoint = this.strandLines.get(finalStrand).getScaledPoint((double) distance / this.radio);
 
-        this.bridges.add(new Bridge(distance, firstStrand, finalStrand, initialPoint, finalPoint, color));
+        this.bridges.add(new Bridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
 
         this.draw();
 
@@ -312,7 +359,7 @@ public final class SpiderWeb {
             return;
         }
 
-        this.addBridge(color, distance, targetBridge.getInitialStrand());
+        this.addBridge(String.format("%s-%s", targetBridge.getInitialStrand(), distance), distance, targetBridge.getInitialStrand());
 
         lastActionWasOk = true;
     }
@@ -409,82 +456,4 @@ public final class SpiderWeb {
 
         System.exit(0);
     }
-
-    public void builder(String input) {
-        if (input.isEmpty()) {
-            MessageHandler.showError("Enter a Valid String!");
-            return;
-        }
-
-        String[] commands = input.strip().split("\n");
-
-        int numOfStrands, numOfBridges = 0, numOfFavoriteStrands;
-
-        try {
-            int[] firstCommand = Arrays.stream(commands[0].split(" "))
-                    .mapToInt(Integer::parseInt)
-                    .toArray();
-
-            if (firstCommand.length != 3) {
-                MessageHandler.showError("Enter a Valid String! in the form: 'n m s'");
-                return;
-            }
-
-            numOfStrands = firstCommand[0];
-            numOfBridges = firstCommand[1];
-            numOfFavoriteStrands = firstCommand[2];
-
-            if (numOfStrands < 3 || 200000 < numOfStrands) {
-                MessageHandler.showError("Invalid Range for 'n' number of strands");
-                return;
-            }
-            if (numOfBridges < 0 || 500000 < numOfBridges) {
-                MessageHandler.showError("Invalid Range for 'm' number of bridges");
-                return;
-            }
-            if (numOfFavoriteStrands < 0 || numOfStrands < numOfFavoriteStrands) {
-                MessageHandler.showError("Invalid Range for 's' favorite strands");
-                return;
-            }
-        } catch (Exception e) {
-            MessageHandler.showError("Ocurrió un error ", "Error: " + e);
-            return;
-        }
-
-        if (numOfBridges != commands.length - 1) {
-            MessageHandler.showError(String.format("Number of Bridges Must Be: %s", numOfBridges), "'number of bridges' must match the bridges that were added");
-            return;
-        }
-
-        //TODO: Create spider web with numOfStrands, numOfBridges and favoriteStrands, what with color??? for favoriteStrand
-
-        for (int index = 1; index < commands.length; index++) {
-            int[] bridgeCommand = Arrays.stream(commands[index].strip().split(" "))
-                    .mapToInt(Integer::parseInt)
-                    .toArray();
-
-            if (bridgeCommand.length != 2) {
-                MessageHandler.showError("Enter a Valid String! in the form: 'd t'");
-                return;
-            }
-
-            int radioBridge = bridgeCommand[0];
-            int initialStrand = bridgeCommand[1];
-
-            if (initialStrand < 0 || initialStrand > numOfStrands) {
-                MessageHandler.showError("The bridge must be built on valid strand");
-                return;
-            }
-            if (radioBridge < 1 || radioBridge > 1000000000){
-                MessageHandler.showError("Invalid Range for 'd' radio bridge");
-            }
-
-            //TODO: here verify that all radio bridges are different
-
-            //TODO: add bridges with radio and initial strand, what with color???
-
-        }
-
-    }
-
 }

@@ -4,7 +4,7 @@ $newFolderName = $folderName + "-BlueJ"
 
 $newFolderPath = "..\$newFolderName"
 
-$exclude = @("out", ".idea", "build")
+$exclude = @("out", ".idea", "build.ps1")
 
 if (-not (Test-Path $newFolderPath)) {
     New-Item -ItemType Directory -Path $newFolderPath
