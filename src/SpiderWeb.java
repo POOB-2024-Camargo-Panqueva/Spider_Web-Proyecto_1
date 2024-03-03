@@ -5,10 +5,11 @@ import java.util.Set;
 
 public final class SpiderWeb {
 
+    public static boolean TEST_MODE = false;
+
     private final ArrayList<Line> strandLines;
     private final ArrayList<Bridge> bridges;
     private final Spider spider;
-
 
     private boolean lastActionWasOk;
     private boolean isVisible;

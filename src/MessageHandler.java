@@ -8,7 +8,10 @@ public abstract class MessageHandler {
      * @param message The error message to display.
      */
     public static void showError(String message) {
-        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+        if (SpiderWeb.TEST_MODE)
+            System.out.println(message);
+        else
+            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -17,7 +20,12 @@ public abstract class MessageHandler {
      * @param message The error message to display.
      */
     public static void showFatalError(String message) throws Exception {
-        JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
+
+        if (SpiderWeb.TEST_MODE)
+            System.out.println(message);
+        else
+            JOptionPane.showMessageDialog(null, message, "Fatal Error", JOptionPane.ERROR_MESSAGE);
+
         throw new Exception(message);
     }
 
@@ -28,7 +36,11 @@ public abstract class MessageHandler {
      * @param message The error message to display.
      */
     public static void showError(String title, String message) {
-        JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
+
+        if (SpiderWeb.TEST_MODE)
+            System.out.println(title + ": " + message);
+        else
+            JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -38,7 +50,11 @@ public abstract class MessageHandler {
      * @param message The error message to display.
      */
     public static void showFatalError(String title, String message) throws Exception {
-        JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
+
+        if (SpiderWeb.TEST_MODE)
+            System.out.println(title + ": " + message);
+        else
+            JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
         throw new Exception(message);
     }
 
@@ -48,7 +64,11 @@ public abstract class MessageHandler {
      * @param message The information message to display.
      */
     public static void showInfo(String message) {
-        JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.INFORMATION_MESSAGE);
+
+        if (SpiderWeb.TEST_MODE)
+            System.out.println(message);
+        else
+            JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -58,6 +78,10 @@ public abstract class MessageHandler {
      * @param message The information message to display.
      */
     public static void showInfo(String title, String message) {
-        JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
+
+        if (SpiderWeb.TEST_MODE)
+            System.out.println(title + ": " + message);
+        else
+            JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 }

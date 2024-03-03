@@ -91,8 +91,9 @@ public class Spider {
             return new Point(x, y);
         };
 
-        double parameter = 0;
-        while (parameter < 1) {
+        double parameter = SpiderWeb.TEST_MODE ? -1 : 0;
+
+        while (parameter >= 0 && parameter < 1) {
             this.position = lineFunction.apply(parameter);
 
             canvas.wait(16);
