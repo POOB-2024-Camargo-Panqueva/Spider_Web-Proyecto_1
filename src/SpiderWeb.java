@@ -223,7 +223,9 @@ public final class SpiderWeb {
 
         this.draw();
 
-        this.spider.setPosition(new Point(this.strandLines.get(currentStrand).getEnd()));
+        if (this.currentStrand != -1)
+            this.spider.setPosition(new Point(this.strandLines.get(currentStrand).getEnd()));
+
         lastActionWasOk = true;
     }
 
@@ -381,6 +383,19 @@ public final class SpiderWeb {
 
             if (isVisible)
                 MessageHandler.showError("The bridge already exists", "The bridge with color " + color + " already exists");
+
+            lastActionWasOk = false;
+            return;
+        }
+
+        boolean inConflict = this.bridges.stream().anyMatch(bridge ->
+                (bridge.getInitialStrand() == initialStrand && bridge.getDistance() == distance) ||
+                        (bridge.getFinalStrand() == initialStrand && bridge.getDistance() == distance));
+
+        if (inConflict) {
+
+            if (isVisible)
+                MessageHandler.showError("Bridge in conflict", "Can't create two bridges with the same distance on adjacent strands");
 
             lastActionWasOk = false;
             return;
