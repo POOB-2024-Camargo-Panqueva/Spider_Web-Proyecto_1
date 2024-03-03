@@ -9,12 +9,12 @@ public final class SpiderWeb {
     private final ArrayList<Bridge> bridges;
     private final Spider spider;
 
-    private final int radio;
 
     private boolean lastActionWasOk;
     private boolean isVisible;
     private int currentStrand;
     private int strands;
+    private int radio;
 
     /**
      * Constructs a SpiderWeb with the specified number of strands and radio.
@@ -175,6 +175,9 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    /**
+     * Adds a strand to the spider web.
+     */
     public void addStrand() {
         this.strands++;
 
@@ -197,6 +200,29 @@ public final class SpiderWeb {
             this.addBridge(bridge.getColor(), bridge.getDistance(), bridge.getInitialStrand());
         }
 
+        lastActionWasOk = true;
+    }
+
+    /**
+     * Expands the radio of the spider web by the specified amount.
+     *
+     * @param radio The amount by which to expand the radio of the spider web.
+     */
+    public void expandRadio(int radio) {
+
+        if (radio < 0 || radio > 1_000_000_000) {
+            MessageHandler.showError("Invalid Range for 'd' radio bridge");
+
+            lastActionWasOk = false;
+            return;
+        }
+
+        this.radio += radio;
+        this.generateStrandLines();
+
+        this.draw();
+
+        this.spider.setPosition(new Point(this.strandLines.get(currentStrand).getEnd()));
         lastActionWasOk = true;
     }
 
