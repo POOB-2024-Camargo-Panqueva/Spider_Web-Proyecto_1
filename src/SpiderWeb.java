@@ -363,6 +363,8 @@ public final class SpiderWeb {
      */
     public void addBridge(String color, int distance, int initialStrand) {
 
+        int finalStrand = initialStrand + 1;
+
         if (initialStrand < 0 || initialStrand >= this.strands) {
 
             if (isVisible)
@@ -388,9 +390,12 @@ public final class SpiderWeb {
             return;
         }
 
-        boolean inConflict = this.bridges.stream().anyMatch(bridge ->
-                (bridge.getInitialStrand() == initialStrand && bridge.getDistance() == distance) ||
-                        (bridge.getFinalStrand() == initialStrand && bridge.getDistance() == distance));
+        boolean inConflict = this.bridges.stream().anyMatch(bridge -> bridge.getDistance() == distance && (
+                (bridge.getInitialStrand() == initialStrand ||
+                        bridge.getFinalStrand() == finalStrand) ||
+                        bridge.getInitialStrand() == finalStrand ||
+                        bridge.getFinalStrand() == initialStrand));
+        //collision
 
         if (inConflict) {
 
@@ -401,7 +406,7 @@ public final class SpiderWeb {
             return;
         }
 
-        int finalStrand = initialStrand + 1;
+
         Point initialPoint = this.strandLines.get(initialStrand).getScaledPoint((double) distance / this.radio);
         Point finalPoint = this.strandLines.get(finalStrand).getScaledPoint((double) distance / this.radio);
 
