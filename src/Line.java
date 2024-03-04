@@ -76,4 +76,13 @@ public final class Line {
     public String toString() {
         return String.format("Line [%s, %s]", start, end);
     }
+
+    public boolean equals(Line line) {
+        return line.start.equals(this.start) && line.end.equals(this.end) && line.color.equals(this.color);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof Line) && this.equals((Line) obj);
+    }
 }

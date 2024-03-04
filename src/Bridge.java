@@ -70,7 +70,22 @@ public final class Bridge {
         return finalPoint;
     }
 
+    @Override
     public String toString() {
         return String.format("Initial Strand: %d, Final Strand: %d, Distance: %d, Color: %s", initialStrand, finalStrand, distance, color);
+    }
+
+    public boolean equals(Bridge bridge) {
+        return bridge.initialStrand == this.initialStrand
+                && bridge.finalStrand == this.finalStrand
+                && bridge.distance == this.distance
+                && bridge.color.equals(this.color)
+                && bridge.initialPoint.equals(this.initialPoint)
+                && bridge.finalPoint.equals(this.finalPoint);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof Bridge) && this.equals((Bridge) obj);
     }
 }
