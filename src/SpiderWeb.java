@@ -265,7 +265,7 @@ public final class SpiderWeb {
             if (isVisible)
                 MessageHandler.showInfo("The spider is already on the center");
 
-            lastActionWasOk = false;
+            lastActionWasOk = true;
             return;
         }
 
@@ -494,7 +494,7 @@ public final class SpiderWeb {
 
         this.strandLines.get(strand).setColor(color);
 
-        lastActionWasOk = false;
+        lastActionWasOk = true;
     }
 
     /**
