@@ -328,7 +328,7 @@ public final class SpiderWeb {
     /**
      * Displays information about the spider web using a pop-up message.
      */
-    public void showWebInfo() {
+    public void printWebInfo() {
         StringBuilder info = new StringBuilder();
 
         info.append(String.format("The spider is at the point [%s, %s]\n", this.spider.getPosition().x, this.spider.getPosition().y));
@@ -395,7 +395,6 @@ public final class SpiderWeb {
                         bridge.getFinalStrand() == finalStrand) ||
                         bridge.getInitialStrand() == finalStrand ||
                         bridge.getFinalStrand() == initialStrand));
-        //collision
 
         if (inConflict) {
 
@@ -525,8 +524,20 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
-    public boolean lastActionWasOk() {
-        return lastActionWasOk;
+    public void printFavoriteStrands() {
+        StringBuilder info = new StringBuilder();
+
+        info.append("The spider has the following favorite strands:\n");
+
+        Set<String> favoriteStrands = this.spider.getFavoriteStrands().keySet();
+
+        for (String color : favoriteStrands) {
+            info.append(String.format("    + Favorite Strand (%s): %s\n", color, this.spider.getFavoriteStrands().get(color)));
+        }
+
+        MessageHandler.showInfo(info.toString());
+
+        lastActionWasOk = true;
     }
 
     /**
@@ -540,6 +551,10 @@ public final class SpiderWeb {
         lastActionWasOk = true;
 
         System.exit(0);
+    }
+
+    public boolean lastActionWasOk() {
+        return lastActionWasOk;
     }
 
     public ArrayList<Line> getStrandLines() {
