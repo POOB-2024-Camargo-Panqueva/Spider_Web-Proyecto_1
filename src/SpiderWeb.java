@@ -200,6 +200,7 @@ public final class SpiderWeb {
         for (Bridge bridge : temporalBridges) {
             this.addBridge(bridge.getColor(), bridge.getDistance(), bridge.getInitialStrand());
         }
+        this.draw();
 
         lastActionWasOk = true;
     }
