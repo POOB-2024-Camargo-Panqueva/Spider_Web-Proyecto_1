@@ -1,7 +1,5 @@
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 public final class SpiderWeb {
 
@@ -58,7 +56,7 @@ public final class SpiderWeb {
             int radioBridge = bridge[0];
             int initialStrand = bridge[1];
 
-            if (initialStrand < 0 || initialStrand >= strands) {
+            if (initialStrand < 0 || initialStrand >= strands + 1) {
                 MessageHandler.showFatalError("The bridge must be built on a valid strand");
             }
 
@@ -78,7 +76,7 @@ public final class SpiderWeb {
 
         final int STRAND_PADDING = 20;
 
-        this.strands = strands;
+        this.strands = strands + 1;
         this.radio = radio + STRAND_PADDING;
         this.currentStrand = -1;
 
@@ -140,6 +138,124 @@ public final class SpiderWeb {
         movementPoints.add(Canvas.CENTER);
 
         return movementPoints;
+    }
+
+    private int getNextIndex(int currentIndex, int increment, int size) {
+        return (currentIndex + increment) % size;
+    }
+
+    private int getPreviousIndex(int currentIndex, int decrement, int size) {
+        return (currentIndex - decrement + size) % size;
+    }
+
+    private void addToIndex(int[] array, int index, int value) {
+        index += 1;
+
+        while (index < array.length) {
+            array[index] += value;
+            index += index & -index;
+        }
+    }
+
+    private int queryCounts(int[] array, int index) {
+        int result = 0;
+        index += 1;
+
+        while (index > 0) {
+            result += array[index];
+            index -= index & -index;
+        }
+
+        return result;
+    }
+
+    private void updateRange(int[] array, int leftIndex, int rightIndex, int value) {
+        addToIndex(array, leftIndex, value);
+        addToIndex(array, rightIndex + 1, -value);
+    }
+
+    private void processRange(int[] array, int leftIndex, int rightIndex, int size) {
+        if (leftIndex <= rightIndex) {
+            updateRange(array, leftIndex, rightIndex, -1);
+        } else {
+            updateRange(array, leftIndex, size - 1, -1);
+            updateRange(array, 0, rightIndex, -1);
+        }
+    }
+
+    public ArrayList<Integer> solve(int numOfStrands, int favoriteStrand, int[][] bridges) {
+        int[] counts = new int[numOfStrands + 1];
+
+        ArrayList<int[]> lines = new ArrayList<>();
+
+        for (int[] bridge : bridges) {
+            int distance = bridge[0];
+            int targetStrand = bridge[1] - 1;
+
+            lines.add(new int[]{distance, targetStrand});
+        }
+
+        for (int i = 0; i < numOfStrands; i++) {
+            updateRange(counts, i, i, Math.min(Math.abs(favoriteStrand - i), numOfStrands - Math.abs(favoriteStrand - i)));
+        }
+
+        lines.sort((a, b) -> Integer.compare(b[0], a[0]));
+
+        for (int[] line : lines) {
+            int targetStrand = line[1];
+            int nextIndex = getNextIndex(targetStrand, 1, numOfStrands);
+            int value1 = queryCounts(counts, targetStrand);
+            int value2 = queryCounts(counts, nextIndex);
+
+            assert Math.abs(value1 - value2) <= 1;
+
+            if (value1 == value2) {
+                continue;
+            }
+
+            if (value1 > value2) {
+                updateRange(counts, targetStrand, targetStrand, -1);
+                int cur = 0;
+
+                for (int i = 18; i >= 0; i--) {
+                    if (cur + (1 << i) <= numOfStrands - 2 && queryCounts(counts, getPreviousIndex(targetStrand, cur + (1 << i), numOfStrands)) == value1 + cur + (1 << i)) {
+                        cur += 1 << i;
+                    }
+                }
+
+                if (cur != 0) {
+                    processRange(counts, getPreviousIndex(targetStrand, cur, numOfStrands), getPreviousIndex(targetStrand, 1, numOfStrands), numOfStrands);
+                }
+
+                if (queryCounts(counts, getNextIndex(nextIndex, 1, numOfStrands)) != value2 - 1) {
+                    updateRange(counts, nextIndex, nextIndex, 1);
+                }
+            } else {
+                updateRange(counts, nextIndex, nextIndex, -1);
+                int cur = 0;
+
+                for (int i = 18; i >= 0; i--) {
+                    if (cur + (1 << i) <= numOfStrands - 2 && queryCounts(counts, getNextIndex(nextIndex, cur + (1 << i), numOfStrands)) == value2 + cur + (1 << i)) {
+                        cur += 1 << i;
+                    }
+                }
+
+                if (cur != 0) {
+                    processRange(counts, getNextIndex(nextIndex, 1, numOfStrands), getNextIndex(nextIndex, cur, numOfStrands), numOfStrands);
+                }
+
+                if (queryCounts(counts, getPreviousIndex(targetStrand, 1, numOfStrands)) != value1 - 1) {
+                    updateRange(counts, targetStrand, targetStrand, 1);
+                }
+            }
+        }
+
+        ArrayList<Integer> result = new ArrayList<>();
+
+        for (int i = 0; i < numOfStrands; i++) {
+            result.add(queryCounts(counts, i));
+        }
+        return result;
     }
 
     /**
