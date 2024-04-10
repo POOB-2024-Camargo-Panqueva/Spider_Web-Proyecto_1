@@ -9,6 +9,7 @@ public final class SpiderWeb {
 
     private final ArrayList<Line> strandLines;
     private final ArrayList<Bridge> bridges;
+//    HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
     private final Spider spider;
 
     private boolean lastActionWasOk;
@@ -589,4 +590,111 @@ public final class SpiderWeb {
     public int getCurrentStrand() {
         return currentStrand;
     }
+
+//    public void simulate(int initialStrand, int finalStrand) {
+//        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
+//        HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
+//
+//        for (int i = 0; i < this.strands; i++) {
+//            bridgesByStrands.put(i, new ArrayList<>());
+//        }
+//
+//        for (Bridge bridge : bridges) {
+//            bridgesByStrands.get(bridge.getInitialStrand() - 1).add(bridge);
+//            bridgesByStrands.get(bridge.getFinalStrand() - 1).add(bridge);
+//        }
+//
+//        int currentStrand = finalStrand;
+//        int clockwiseNeighbor = -1;
+//        int counterclockwiseNeighbor = -1;
+//        int currentRadio = this.radio;
+//        ArrayList<Point> movementPoints = new ArrayList<>();
+//
+//        movementPoints.add(strandLines.get(finalStrand).getEnd());
+//
+//        while (true) {
+//            clockwiseNeighbor = currentStrand - 1;
+//            counterclockwiseNeighbor = currentStrand + 1;
+//            if (currentStrand == 1) {
+//                clockwiseNeighbor = strands;
+//            } else if (currentStrand == strands) {
+//                counterclockwiseNeighbor = 1;
+//            }
+//        }
+//    }
+//
+//    public void sortBridges() {
+//        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
+//    }
+//
+//    public void createBridgesHashmap() {
+//        for (int i = 0; i < this.strands; i++) {
+//            bridgesByStrands.put(i, new ArrayList<>());
+//        }
+//
+//        for (Bridge bridge : bridges) {
+//            bridgesByStrands.get(bridge.getInitialStrand() - 1).add(bridge);
+//            bridgesByStrands.get(bridge.getFinalStrand() - 1).add(bridge);
+//        }
+//    }
+//
+//    public ArrayList<Integer> solution = new ArrayList<Integer>();
+//
+//    public void findSolution() {
+//        //TODO: we need to save the solution in spiderweb
+//
+//    }
+//
+//    private ArrayList<Bridge> pathMaker(int currStrand, int iRadio, ArrayList<Bridge> record) {
+//
+//        if (record.size() > solution.get(currStrand)) {
+//            return new ArrayList<Bridge>();
+//        }
+//
+//        int clockwiseNeighbor = currStrand - 1;
+//        int counterclockwiseNeighbor = currStrand + 1;
+//        if (currStrand == 1) {
+//            clockwiseNeighbor = strands;
+//        } else if (currStrand == strands) {
+//            counterclockwiseNeighbor = 1;
+//        }
+//
+//        int limitZone = findNextZone(iRadio, bridgesByStrands.get(clockwiseNeighbor), bridgesByStrands.get(counterclockwiseNeighbor));
+//
+//        ArrayList<Bridge> straight = pathMaker(currStrand, limitZone, record);
+//        ArrayList<Bridge> CounterClock = pathMaker(counterclockwiseNeighbor, limitZone, record);
+//
+//        return null;
+//
+//    }
+//
+//    public int findNextZone(int iRadio, ArrayList<Bridge> neighborC, ArrayList<Bridge> neighborCc) {
+//        Optional<Bridge> endZone = neighborC.stream().filter(candidate -> candidate.getDistance() < iRadio).findFirst();
+//        int zoneValue = -1;
+//        if (endZone.isPresent()) {
+//            zoneValue = endZone.get().getDistance();
+//        }
+//        endZone = neighborCc.stream().filter(candidate -> candidate.getDistance() < iRadio).findFirst();
+//        if (endZone.isPresent() && zoneValue < endZone.get().getDistance()) {
+//            zoneValue = endZone.get().getDistance();
+//        }
+//
+//        return zoneValue;
+//    }
+//
+//    public int findAMovement(int start, int limit, int currStrand, ArrayList<Bridge> searchHere) {
+//        Optional<Bridge> nextWay = searchHere.stream()
+//                    .filter(candidate -> (candidate.getDistance() > limit && candidate.getDistance() < start) && candidate.getInitialStrand() == currStrand).findFirst();
+//        int nextStrand = -1;
+//        if (nextWay.isPresent()) {
+//            nextStrand = nextWay.get().getFinalStrand();
+//        }
+//
+//        if (nextStrand == -1){
+//            return currStrand;
+//        }
+//
+//        return nextStrand;
+//    }
+
 }
