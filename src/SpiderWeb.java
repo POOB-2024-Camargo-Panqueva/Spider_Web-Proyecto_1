@@ -1,9 +1,5 @@
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
-import java.util.Optional;
-import java.util.HashMap;
+import java.util.*;
 
 public final class SpiderWeb {
 
@@ -363,24 +359,14 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
-    /**
-     * Adds a bridge to the spider web with the specified color, distance, and initial strand.
-     *
-     * @param color         The color of the bridge.
-     * @param distance      The distance of the bridge.
-     * @param initialStrand The initial strand of the bridge.
-     */
-    public void addBridge(String color, int distance, int initialStrand) {
-
-        int finalStrand = initialStrand + 1;
-
+    private boolean validBridge(String color, int distance, int initialStrand, int finalStrand) {
         if (initialStrand < 0 || initialStrand >= this.strands) {
 
             if (isVisible)
                 MessageHandler.showError("Invalid strand", "The strand " + initialStrand + " is not valid");
 
             lastActionWasOk = false;
-            return;
+            return false;
         }
         if (distance < 0 || distance > radio) {
 
@@ -388,7 +374,7 @@ public final class SpiderWeb {
                 MessageHandler.showError("Invalid distance", "The distance " + distance + " is not valid");
 
             lastActionWasOk = false;
-            return;
+            return false;
         }
         if (this.bridges.stream().anyMatch(bridge -> bridge.getColor().equals(color))) {
 
@@ -396,7 +382,7 @@ public final class SpiderWeb {
                 MessageHandler.showError("The bridge already exists", "The bridge with color " + color + " already exists");
 
             lastActionWasOk = false;
-            return;
+            return false;
         }
 
         boolean inConflict = this.bridges.stream().anyMatch(bridge -> bridge.getDistance() == distance && (
@@ -411,9 +397,25 @@ public final class SpiderWeb {
                 MessageHandler.showError("Bridge in conflict", "Can't create two bridges with the same distance on adjacent strands");
 
             lastActionWasOk = false;
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Adds a bridge to the spider web with the specified color, distance, and initial strand.
+     *
+     * @param color         The color of the bridge.
+     * @param distance      The distance of the bridge.
+     * @param initialStrand The initial strand of the bridge.
+     */
+    public void addBridge(String color, int distance, int initialStrand) {
+
+        int finalStrand = initialStrand + 1;
+
+        if (!this.validBridge(color, distance, initialStrand, finalStrand)) {
             return;
         }
-
 
         Point initialPoint = this.strandStrands.get(initialStrand).getScaledPoint((double) distance / this.radio);
         Point finalPoint = this.strandStrands.get(finalStrand).getScaledPoint((double) distance / this.radio);
@@ -423,6 +425,25 @@ public final class SpiderWeb {
         this.draw();
 
         lastActionWasOk = true;
+    }
+
+    public void addBridge(String color, int distance, int initialStrand, Bridge.Types type) {
+
+        int finalStrand = initialStrand + 1;
+
+        if (!this.validBridge(color, distance, initialStrand, finalStrand)) {
+            return;
+        }
+
+        Point initialPoint = this.strandStrands.get(initialStrand).getScaledPoint((double) distance / this.radio);
+        Point finalPoint = this.strandStrands.get(finalStrand).getScaledPoint((double) distance / this.radio);
+
+        this.bridges.add(new Bridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color, type));
+
+        this.draw();
+
+        this.lastActionWasOk = true;
+
     }
 
     /**
@@ -549,8 +570,8 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
-    public void resetUsedBridges(){
-        usedBridges .clear();
+    public void resetUsedBridges() {
+        usedBridges.clear();
     }
 
     /**
@@ -607,7 +628,7 @@ public final class SpiderWeb {
         return usedBridges;
     }
 
-        public void simulate(int initialStrand, int finalStrand) {
+    public void simulate(int initialStrand, int finalStrand) {
         bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
         HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
 
@@ -677,10 +698,10 @@ public final class SpiderWeb {
 
         int limitZone = findNextZone(iRadio, bridgesByStrands.get(clockwiseNeighbor), bridgesByStrands.get(counterclockwiseNeighbor));
 
-        if(limitZone==-1 && currStrand == targetStrand){
+        if (limitZone == -1 && currStrand == targetStrand) {
             return bridgesMade;
         }
-        if (limitZone==-1){
+        if (limitZone == -1) {
             return null;
         }
 
@@ -688,25 +709,24 @@ public final class SpiderWeb {
 
         ArrayList<Bridge> straight;
 
-        if(takeABridge.isPresent()){
+        if (takeABridge.isPresent()) {
             straight = pathMaker(takeABridge.get().getFinalStrand(), limitZone, record, targetStrand, bridgesMade);
-        }
-        else {
+        } else {
             straight = pathMaker(currStrand, limitZone, record, targetStrand, bridgesMade);
         }
 
         Point pointI = this.strandStrands.get(currStrand).getScaledPoint((double) (iRadio - 1) / this.radio);
-        Point pointF = this.strandStrands.get(counterclockwiseNeighbor).getScaledPoint((double) (iRadio-1) / this.radio);
+        Point pointF = this.strandStrands.get(counterclockwiseNeighbor).getScaledPoint((double) (iRadio - 1) / this.radio);
         Bridge bridgeCc = new Bridge(iRadio - 1, currStrand, counterclockwiseNeighbor, pointI, pointF, "simulate");
         bridgesMade.add(bridgeCc);
-        ArrayList<Bridge> counterClockPath = pathMaker(counterclockwiseNeighbor, limitZone, record-1, targetStrand, bridgesMade);
+        ArrayList<Bridge> counterClockPath = pathMaker(counterclockwiseNeighbor, limitZone, record - 1, targetStrand, bridgesMade);
         bridgesMade.remove(bridgeCc);
 
         pointI = this.strandStrands.get(currStrand).getScaledPoint((double) (iRadio - 1) / this.radio);
-        pointF = this.strandStrands.get(clockwiseNeighbor).getScaledPoint((double) (iRadio-1) / this.radio);
+        pointF = this.strandStrands.get(clockwiseNeighbor).getScaledPoint((double) (iRadio - 1) / this.radio);
         Bridge bridgeC = new Bridge(iRadio - 1, currStrand, clockwiseNeighbor, pointI, pointF, "simulate");
         bridgesMade.add(bridgeC);
-        ArrayList<Bridge> clockWisePath = pathMaker(clockwiseNeighbor, limitZone, record-1, targetStrand, bridgesMade);
+        ArrayList<Bridge> clockWisePath = pathMaker(clockwiseNeighbor, limitZone, record - 1, targetStrand, bridgesMade);
         bridgesMade.remove(bridgeC);
 
         return null;
