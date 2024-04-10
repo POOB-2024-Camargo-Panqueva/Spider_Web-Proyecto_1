@@ -488,6 +488,11 @@ public final class SpiderWeb {
 
         for (int i = 0; i < this.bridges.size(); i++) {
             if (this.bridges.get(i).getColor().equals(color)) {
+                if(this.bridges.get(i).getType() == Bridge.Types.FIXED){
+                    MessageHandler.showError("You cannot delete a 'Fixed' Bridge");
+                    break;
+                }
+
                 targetBridge = this.bridges.remove(i);
                 targetBridge.erase();
                 break;

@@ -94,6 +94,10 @@ public final class Bridge {
         return finalPoint;
     }
 
+    public Types getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
         return String.format("Initial Strand: %d, Final Strand: %d, Distance: %d, Color: %s", initialStrand, finalStrand, distance, color);
