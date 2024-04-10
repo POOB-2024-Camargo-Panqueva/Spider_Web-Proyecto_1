@@ -9,6 +9,7 @@ public final class Bridge {
     private final String color;
     private final Point initialPoint;
     private final Point finalPoint;
+    private final Types type;
 
     /**
      * Constructs a new instance of Bridge with the specified parameters.
@@ -28,6 +29,20 @@ public final class Bridge {
 
         this.initialPoint = initialPoint;
         this.finalPoint = finalPoint;
+
+        this.type = Types.NORMAL;
+    }
+
+    public Bridge(int distance, int initialStrand, int finalStrand, Point initialPoint, Point finalPoint, String color, Types type) {
+        this.distance = distance;
+        this.initialStrand = initialStrand;
+        this.finalStrand = finalStrand;
+        this.color = color;
+
+        this.initialPoint = initialPoint;
+        this.finalPoint = finalPoint;
+
+        this.type = type;
     }
 
     /**
@@ -48,6 +63,7 @@ public final class Bridge {
 
     /**
      * Copies the bridge.
+     *
      * @return A new instance of Bridge with the same parameters as the original.
      */
     public Bridge copy() {
@@ -95,5 +111,26 @@ public final class Bridge {
     @Override
     public boolean equals(Object obj) {
         return (obj instanceof Bridge) && this.equals((Bridge) obj);
+    }
+
+    /**
+     * The types of bridges.
+     */
+    public enum Types {
+        NORMAL("normal"),
+        FIXED("fixed"),
+        TRANSFORMER("transformer"),
+        WEAK("weak"),
+        MOBILE("mobile");
+
+        private final String type;
+
+        Types(String black) {
+            this.type = black;
+        }
+
+        public String getType() {
+            return type;
+        }
     }
 }
