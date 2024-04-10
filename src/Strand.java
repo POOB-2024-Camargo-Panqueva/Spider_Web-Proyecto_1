@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.awt.geom.Line2D;
 
-public final class Line {
+public final class Strand {
 
     private final Point start;
     private final Point end;
@@ -14,7 +14,7 @@ public final class Line {
      * @param start The starting point of the line.
      * @param end   The ending point of the line.
      */
-    public Line(Point start, Point end) {
+    public Strand(Point start, Point end) {
         this.start = start;
         this.end = end;
         this.color = "gray";
@@ -27,7 +27,7 @@ public final class Line {
      * @param end   The ending point of the line.
      * @param color The color of the line.
      */
-    public Line(Point start, Point end, String color) {
+    public Strand(Point start, Point end, String color) {
         this.start = start;
         this.end = end;
         this.color = color;
@@ -77,12 +77,12 @@ public final class Line {
         return String.format("Line [%s, %s]", start, end);
     }
 
-    public boolean equals(Line line) {
-        return line.start.equals(this.start) && line.end.equals(this.end) && line.color.equals(this.color);
+    public boolean equals(Strand strand) {
+        return strand.start.equals(this.start) && strand.end.equals(this.end) && strand.color.equals(this.color);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof Line) && this.equals((Line) obj);
+        return (obj instanceof Strand) && this.equals((Strand) obj);
     }
 }

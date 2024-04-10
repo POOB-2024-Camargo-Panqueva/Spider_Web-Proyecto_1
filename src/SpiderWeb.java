@@ -9,7 +9,7 @@ public final class SpiderWeb {
 
     public static boolean TEST_MODE = false;
 
-    private final ArrayList<Line> strandLines;
+    private final ArrayList<Strand> strandStrands;
     private final ArrayList<Bridge> bridges;
     private final ArrayList<Bridge> usedBridges = new ArrayList<Bridge>();
     HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
@@ -35,7 +35,7 @@ public final class SpiderWeb {
         this.isVisible = false;
 
         this.spider = new Spider(new Point(Canvas.CENTER));
-        this.strandLines = new ArrayList<>(this.strands);
+        this.strandStrands = new ArrayList<>(this.strands);
         this.bridges = new ArrayList<>();
 
         this.generateStrandLines();
@@ -89,7 +89,7 @@ public final class SpiderWeb {
         this.isVisible = false;
 
         this.spider = new Spider(new Point(Canvas.CENTER));
-        this.strandLines = new ArrayList<>(this.strands);
+        this.strandStrands = new ArrayList<>(this.strands);
         this.generateStrandLines();
 
         this.bridges = new ArrayList<>();
@@ -113,7 +113,7 @@ public final class SpiderWeb {
         int currentStrand = targetStrand;
         int currentDistance = this.radio;
 
-        movementPoints.add(strandLines.get(targetStrand).getEnd());
+        movementPoints.add(strandStrands.get(targetStrand).getEnd());
 
         while (flag) {
             int candidates = 0;
@@ -191,7 +191,7 @@ public final class SpiderWeb {
         this.generateStrandLines();
 
         if (this.currentStrand != -1)
-            this.spider.setPosition(new Point(this.strandLines.get(currentStrand).getEnd()));
+            this.spider.setPosition(new Point(this.strandStrands.get(currentStrand).getEnd()));
 
         ArrayList<Bridge> temporalBridges = new ArrayList<>();
         ArrayList<Bridge> bridgesClone = new ArrayList<>(this.bridges);
@@ -231,7 +231,7 @@ public final class SpiderWeb {
         this.draw();
 
         if (this.currentStrand != -1)
-            this.spider.setPosition(new Point(this.strandLines.get(currentStrand).getEnd()));
+            this.spider.setPosition(new Point(this.strandStrands.get(currentStrand).getEnd()));
 
         lastActionWasOk = true;
     }
@@ -286,17 +286,17 @@ public final class SpiderWeb {
      * Generates strand lines based on the number of strands.
      */
     private void generateStrandLines() {
-        for (Line line : this.strandLines) {
-            line.erase();
+        for (Strand strand : this.strandStrands) {
+            strand.erase();
         }
 
-        this.strandLines.clear();
+        this.strandStrands.clear();
 
         for (int index = this.strands; index >= 0; index--) {
             double angle = Math.toRadians((double) 360 / this.strands * index);
             int x = (int) (this.radio * Math.cos(angle));
             int y = (int) (this.radio * Math.sin(angle));
-            this.strandLines.add(new Line(new Point(Canvas.CENTER), new Point(Canvas.CENTER.x + x, Canvas.CENTER.y + y)));
+            this.strandStrands.add(new Strand(new Point(Canvas.CENTER), new Point(Canvas.CENTER.x + x, Canvas.CENTER.y + y)));
         }
     }
 
@@ -328,7 +328,7 @@ public final class SpiderWeb {
      */
     private void draw() {
         if (this.isVisible) {
-            this.strandLines.forEach(Line::draw);
+            this.strandStrands.forEach(Strand::draw);
             this.bridges.forEach(Bridge::draw);
             this.spider.draw();
         }
@@ -415,8 +415,8 @@ public final class SpiderWeb {
         }
 
 
-        Point initialPoint = this.strandLines.get(initialStrand).getScaledPoint((double) distance / this.radio);
-        Point finalPoint = this.strandLines.get(finalStrand).getScaledPoint((double) distance / this.radio);
+        Point initialPoint = this.strandStrands.get(initialStrand).getScaledPoint((double) distance / this.radio);
+        Point finalPoint = this.strandStrands.get(finalStrand).getScaledPoint((double) distance / this.radio);
 
         this.bridges.add(new Bridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
 
@@ -505,7 +505,7 @@ public final class SpiderWeb {
             return;
         }
 
-        this.strandLines.get(strand).setColor(color);
+        this.strandStrands.get(strand).setColor(color);
 
         lastActionWasOk = true;
     }
@@ -527,7 +527,7 @@ public final class SpiderWeb {
             return;
         }
 
-        this.strandLines.get(result).setColor("gray");
+        this.strandStrands.get(result).setColor("gray");
         MessageHandler.showInfo("The Strand " + color + " was deleted");
 
         lastActionWasOk = true;
@@ -570,8 +570,8 @@ public final class SpiderWeb {
         return lastActionWasOk;
     }
 
-    public ArrayList<Line> getStrandLines() {
-        return strandLines;
+    public ArrayList<Strand> getStrandLines() {
+        return strandStrands;
     }
 
     public ArrayList<Bridge> getBridges() {
@@ -626,7 +626,7 @@ public final class SpiderWeb {
         int currentRadio = this.radio;
         ArrayList<Point> movementPoints = new ArrayList<>();
 
-        movementPoints.add(strandLines.get(finalStrand).getEnd());
+        movementPoints.add(strandStrands.get(finalStrand).getEnd());
 
         while (true) {
             clockwiseNeighbor = currentStrand - 1;
@@ -695,15 +695,15 @@ public final class SpiderWeb {
             straight = pathMaker(currStrand, limitZone, record, targetStrand, bridgesMade);
         }
 
-        Point pointI = this.strandLines.get(currStrand).getScaledPoint((double) (iRadio - 1) / this.radio);
-        Point pointF = this.strandLines.get(counterclockwiseNeighbor).getScaledPoint((double) (iRadio-1) / this.radio);
+        Point pointI = this.strandStrands.get(currStrand).getScaledPoint((double) (iRadio - 1) / this.radio);
+        Point pointF = this.strandStrands.get(counterclockwiseNeighbor).getScaledPoint((double) (iRadio-1) / this.radio);
         Bridge bridgeCc = new Bridge(iRadio - 1, currStrand, counterclockwiseNeighbor, pointI, pointF, "simulate");
         bridgesMade.add(bridgeCc);
         ArrayList<Bridge> counterClockPath = pathMaker(counterclockwiseNeighbor, limitZone, record-1, targetStrand, bridgesMade);
         bridgesMade.remove(bridgeCc);
 
-        pointI = this.strandLines.get(currStrand).getScaledPoint((double) (iRadio - 1) / this.radio);
-        pointF = this.strandLines.get(clockwiseNeighbor).getScaledPoint((double) (iRadio-1) / this.radio);
+        pointI = this.strandStrands.get(currStrand).getScaledPoint((double) (iRadio - 1) / this.radio);
+        pointF = this.strandStrands.get(clockwiseNeighbor).getScaledPoint((double) (iRadio-1) / this.radio);
         Bridge bridgeC = new Bridge(iRadio - 1, currStrand, clockwiseNeighbor, pointI, pointF, "simulate");
         bridgesMade.add(bridgeC);
         ArrayList<Bridge> clockWisePath = pathMaker(clockwiseNeighbor, limitZone, record-1, targetStrand, bridgesMade);

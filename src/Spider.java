@@ -11,7 +11,7 @@ public class Spider {
     private final int WIDTH = 30;
     private final int HEIGHT = 24;
     private final HashMap<String, Integer> favoriteStrands;
-    private final ArrayList<Line> traceLines;
+    private final ArrayList<Strand> traceStrands;
     private Boolean isVisible = true;
 
     private Point position;
@@ -24,7 +24,7 @@ public class Spider {
     public Spider(Point position) {
         this.position = position;
         this.favoriteStrands = new HashMap<>();
-        this.traceLines = new ArrayList<>();
+        this.traceStrands = new ArrayList<>();
     }
 
     /**
@@ -41,8 +41,8 @@ public class Spider {
             canvas.draw(this + "leftEye", "red", new Ellipse2D.Double(xDraw + 5, yDraw + 5, 5, 5));
             canvas.draw(this + "rightEye", "red", new Ellipse2D.Double(xDraw + 20, yDraw + 5, 5, 5));
 
-            for (Line line : traceLines) {
-                line.draw();
+            for (Strand strand : traceStrands) {
+                strand.draw();
             }
         }
     }
@@ -122,7 +122,7 @@ public class Spider {
         }
 
         if(SpiderWeb.TEST_MODE){
-        this.traceLines.add(new Line(initialPosition, newPosition, "red"));
+        this.traceStrands.add(new Strand(initialPosition, newPosition, "red"));
         }
     }
 
@@ -152,9 +152,9 @@ public class Spider {
     }
 
     public void resetTraceLines() {
-        for (Line line : traceLines) {
-            line.erase();
+        for (Strand strand : traceStrands) {
+            strand.erase();
         }
-        traceLines.clear();
+        traceStrands.clear();
     }
 }
