@@ -9,6 +9,7 @@ public final class SpiderWeb {
 
     private final ArrayList<Line> strandLines;
     private final ArrayList<Bridge> bridges;
+    private final ArrayList<Bridge> usedBridges = new ArrayList<Bridge>();
 //    HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
     private final Spider spider;
 
@@ -124,12 +125,14 @@ public final class SpiderWeb {
                 if (currentStrand == bridge.getFinalStrand()) {
                     movementPoints.add(bridge.getFinalPoint());
                     movementPoints.add(bridge.getInitialPoint());
+                    usedBridges.add(bridge);
                     currentStrand = bridge.getInitialStrand();
                     currentDistance = bridge.getDistance();
                     break;
                 } else {
                     movementPoints.add(bridge.getInitialPoint());
                     movementPoints.add(bridge.getFinalPoint());
+                    usedBridges.add(bridge);
                     currentStrand = bridge.getFinalStrand();
                     currentDistance = bridge.getDistance();
                 }
@@ -542,6 +545,10 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    public void resetUsedBridges(){
+        usedBridges .clear();
+    }
+
     /**
      * Finishes the spider web application, hides the canvas, and shows a closing message.
      */
@@ -591,7 +598,12 @@ public final class SpiderWeb {
         return currentStrand;
     }
 
-//    public void simulate(int initialStrand, int finalStrand) {
+    public ArrayList<Bridge> getUsedBridges() {
+        Collections.reverse(usedBridges);
+        return usedBridges;
+    }
+
+    //    public void simulate(int initialStrand, int finalStrand) {
 //        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
 //        HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
 //
