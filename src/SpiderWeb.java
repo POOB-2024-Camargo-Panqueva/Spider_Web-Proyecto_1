@@ -303,6 +303,7 @@ public final class SpiderWeb {
      */
     public void makeVisible() {
         this.isVisible = true;
+        this.spider.makeVisible();
         this.draw();
 
         lastActionWasOk = true;
@@ -313,6 +314,7 @@ public final class SpiderWeb {
      */
     public void makeInvisible() {
         this.isVisible = false;
+        this.spider.makeInvisible();
         Canvas canvas = Canvas.getCanvas();
         canvas.setVisible(false);
 

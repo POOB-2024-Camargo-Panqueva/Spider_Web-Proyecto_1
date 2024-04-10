@@ -12,6 +12,7 @@ public class Spider {
     private final int HEIGHT = 24;
     private final HashMap<String, Integer> favoriteStrands;
     private final ArrayList<Line> traceLines;
+    private Boolean isVisible = true;
 
     private Point position;
 
@@ -31,16 +32,18 @@ public class Spider {
      * The spider is represented by a black ellipse centered at its current position.
      */
     public void draw() {
-        Canvas canvas = Canvas.getCanvas();
-        double xDraw = position.getX() - (double) WIDTH / 2;
-        double yDraw = position.getY() - (double) HEIGHT / 2;
+        if(isVisible) {
+            Canvas canvas = Canvas.getCanvas();
+            double xDraw = position.getX() - (double) WIDTH / 2;
+            double yDraw = position.getY() - (double) HEIGHT / 2;
 
-        canvas.draw(this, "black", new Ellipse2D.Double(xDraw, yDraw, WIDTH, HEIGHT));
-        canvas.draw(this + "leftEye", "red", new Ellipse2D.Double(xDraw + 5, yDraw + 5, 5, 5));
-        canvas.draw(this + "rightEye", "red", new Ellipse2D.Double(xDraw + 20, yDraw + 5, 5, 5));
+            canvas.draw(this, "black", new Ellipse2D.Double(xDraw, yDraw, WIDTH, HEIGHT));
+            canvas.draw(this + "leftEye", "red", new Ellipse2D.Double(xDraw + 5, yDraw + 5, 5, 5));
+            canvas.draw(this + "rightEye", "red", new Ellipse2D.Double(xDraw + 20, yDraw + 5, 5, 5));
 
-        for (Line line : traceLines) {
-            line.draw();
+            for (Line line : traceLines) {
+                line.draw();
+            }
         }
     }
 
@@ -71,6 +74,14 @@ public class Spider {
         return result;
     }
 
+    public void makeInvisible(){
+        isVisible = false;
+    }
+
+    public void makeVisible(){
+        isVisible =  true;
+    }
+
     /**
      * Moves the spider smoothly to the specified new position.
      * The movement is performed in a straight line at a constant speed.
@@ -95,10 +106,12 @@ public class Spider {
 
         while (parameter >= 0 && parameter < 1) {
             this.position = lineFunction.apply(parameter);
-
             canvas.wait(16);
             this.draw();
-            canvas.draw(this + "currentLine", "red", new Line2D.Double(initialPosition.getX(), initialPosition.getY(), position.getX(), position.getY()));
+
+            if(SpiderWeb.TEST_MODE){
+                canvas.draw(this + "currentLine", "red", new Line2D.Double(initialPosition.getX(), initialPosition.getY(), position.getX(), position.getY()));
+            }
 
             parameter += STEP;
         }
@@ -108,7 +121,9 @@ public class Spider {
             this.draw();
         }
 
+        if(SpiderWeb.TEST_MODE){
         this.traceLines.add(new Line(initialPosition, newPosition, "red"));
+        }
     }
 
     /**

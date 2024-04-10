@@ -17,7 +17,7 @@ class SpiderWebTest {
         SpiderWeb.TEST_MODE = true;
         spiderWeb = new SpiderWeb(7, 200);
 
-        spiderWeb.makeVisible();
+        spiderWeb.makeInvisible();
         spiderWeb.addBridge("1", 100, 1);
         spiderWeb.addBridge("2", 120, 2);
         spiderWeb.addBridge("3", 140, 3);
