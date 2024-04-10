@@ -2,6 +2,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
+import java.util.Optional;
+import java.util.HashMap;
 
 public final class SpiderWeb {
 
@@ -10,7 +12,7 @@ public final class SpiderWeb {
     private final ArrayList<Line> strandLines;
     private final ArrayList<Bridge> bridges;
     private final ArrayList<Bridge> usedBridges = new ArrayList<Bridge>();
-//    HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
+    HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
     private final Spider spider;
 
     private boolean lastActionWasOk;
@@ -605,110 +607,124 @@ public final class SpiderWeb {
         return usedBridges;
     }
 
-    //    public void simulate(int initialStrand, int finalStrand) {
-//        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
-//        HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
-//
-//        for (int i = 0; i < this.strands; i++) {
-//            bridgesByStrands.put(i, new ArrayList<>());
-//        }
-//
-//        for (Bridge bridge : bridges) {
-//            bridgesByStrands.get(bridge.getInitialStrand() - 1).add(bridge);
-//            bridgesByStrands.get(bridge.getFinalStrand() - 1).add(bridge);
-//        }
-//
-//        int currentStrand = finalStrand;
-//        int clockwiseNeighbor = -1;
-//        int counterclockwiseNeighbor = -1;
-//        int currentRadio = this.radio;
-//        ArrayList<Point> movementPoints = new ArrayList<>();
-//
-//        movementPoints.add(strandLines.get(finalStrand).getEnd());
-//
-//        while (true) {
-//            clockwiseNeighbor = currentStrand - 1;
-//            counterclockwiseNeighbor = currentStrand + 1;
-//            if (currentStrand == 1) {
-//                clockwiseNeighbor = strands;
-//            } else if (currentStrand == strands) {
-//                counterclockwiseNeighbor = 1;
-//            }
-//        }
-//    }
-//
-//    public void sortBridges() {
-//        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
-//    }
-//
-//    public void createBridgesHashmap() {
-//        for (int i = 0; i < this.strands; i++) {
-//            bridgesByStrands.put(i, new ArrayList<>());
-//        }
-//
-//        for (Bridge bridge : bridges) {
-//            bridgesByStrands.get(bridge.getInitialStrand() - 1).add(bridge);
-//            bridgesByStrands.get(bridge.getFinalStrand() - 1).add(bridge);
-//        }
-//    }
-//
-//    public ArrayList<Integer> solution = new ArrayList<Integer>();
-//
-//    public void findSolution() {
-//        //TODO: we need to save the solution in spiderweb
-//
-//    }
-//
-//    private ArrayList<Bridge> pathMaker(int currStrand, int iRadio, ArrayList<Bridge> record) {
-//
-//        if (record.size() > solution.get(currStrand)) {
-//            return new ArrayList<Bridge>();
-//        }
-//
-//        int clockwiseNeighbor = currStrand - 1;
-//        int counterclockwiseNeighbor = currStrand + 1;
-//        if (currStrand == 1) {
-//            clockwiseNeighbor = strands;
-//        } else if (currStrand == strands) {
-//            counterclockwiseNeighbor = 1;
-//        }
-//
-//        int limitZone = findNextZone(iRadio, bridgesByStrands.get(clockwiseNeighbor), bridgesByStrands.get(counterclockwiseNeighbor));
-//
-//        ArrayList<Bridge> straight = pathMaker(currStrand, limitZone, record);
-//        ArrayList<Bridge> CounterClock = pathMaker(counterclockwiseNeighbor, limitZone, record);
-//
-//        return null;
-//
-//    }
-//
-//    public int findNextZone(int iRadio, ArrayList<Bridge> neighborC, ArrayList<Bridge> neighborCc) {
-//        Optional<Bridge> endZone = neighborC.stream().filter(candidate -> candidate.getDistance() < iRadio).findFirst();
-//        int zoneValue = -1;
-//        if (endZone.isPresent()) {
-//            zoneValue = endZone.get().getDistance();
-//        }
-//        endZone = neighborCc.stream().filter(candidate -> candidate.getDistance() < iRadio).findFirst();
-//        if (endZone.isPresent() && zoneValue < endZone.get().getDistance()) {
-//            zoneValue = endZone.get().getDistance();
-//        }
-//
-//        return zoneValue;
-//    }
-//
-//    public int findAMovement(int start, int limit, int currStrand, ArrayList<Bridge> searchHere) {
-//        Optional<Bridge> nextWay = searchHere.stream()
-//                    .filter(candidate -> (candidate.getDistance() > limit && candidate.getDistance() < start) && candidate.getInitialStrand() == currStrand).findFirst();
-//        int nextStrand = -1;
-//        if (nextWay.isPresent()) {
-//            nextStrand = nextWay.get().getFinalStrand();
-//        }
-//
-//        if (nextStrand == -1){
-//            return currStrand;
-//        }
-//
-//        return nextStrand;
-//    }
+        public void simulate(int initialStrand, int finalStrand) {
+        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
+        HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
+
+        for (int i = 0; i < this.strands; i++) {
+            bridgesByStrands.put(i, new ArrayList<>());
+        }
+
+        for (Bridge bridge : bridges) {
+            bridgesByStrands.get(bridge.getInitialStrand() - 1).add(bridge);
+            bridgesByStrands.get(bridge.getFinalStrand() - 1).add(bridge);
+        }
+
+        int currentStrand = finalStrand;
+        int clockwiseNeighbor = -1;
+        int counterclockwiseNeighbor = -1;
+        int currentRadio = this.radio;
+        ArrayList<Point> movementPoints = new ArrayList<>();
+
+        movementPoints.add(strandLines.get(finalStrand).getEnd());
+
+        while (true) {
+            clockwiseNeighbor = currentStrand - 1;
+            counterclockwiseNeighbor = currentStrand + 1;
+            if (currentStrand == 1) {
+                clockwiseNeighbor = strands;
+            } else if (currentStrand == strands) {
+                counterclockwiseNeighbor = 1;
+            }
+        }
+    }
+
+    public void sortBridges() {
+        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
+    }
+
+    public void createBridgesHashmap() {
+        for (int i = 0; i < this.strands; i++) {
+            bridgesByStrands.put(i, new ArrayList<>());
+        }
+
+        for (Bridge bridge : bridges) {
+            bridgesByStrands.get(bridge.getInitialStrand() - 1).add(bridge);
+            bridgesByStrands.get(bridge.getFinalStrand() - 1).add(bridge);
+        }
+    }
+
+    public ArrayList<Integer> solution = new ArrayList<Integer>();
+
+    public void findSolution() {
+        //TODO: we need to save the solution in spiderweb
+
+    }
+
+    private ArrayList<Bridge> pathMaker(int currStrand, int iRadio, int record, int targetStrand, ArrayList<Bridge> bridgesMade) {
+
+        if (record < 0) {
+            return null;
+        }
+
+        int clockwiseNeighbor = currStrand - 1;
+        int counterclockwiseNeighbor = currStrand + 1;
+        if (currStrand == 1) {
+            clockwiseNeighbor = strands;
+        } else if (currStrand == strands) {
+            counterclockwiseNeighbor = 1;
+        }
+
+        int limitZone = findNextZone(iRadio, bridgesByStrands.get(clockwiseNeighbor), bridgesByStrands.get(counterclockwiseNeighbor));
+
+        if(limitZone==-1 && currStrand == targetStrand){
+            return bridgesMade;
+        }
+        if (limitZone==-1){
+            return null;
+        }
+
+        Optional<Bridge> takeABridge = bridgesByStrands.get(currStrand).stream().filter(candidate -> candidate.getInitialStrand() == currStrand).findFirst();
+
+        ArrayList<Bridge> straight;
+
+        if(takeABridge.isPresent()){
+            straight = pathMaker(takeABridge.get().getFinalStrand(), limitZone, record, targetStrand, bridgesMade);
+        }
+        else {
+            straight = pathMaker(currStrand, limitZone, record, targetStrand, bridgesMade);
+        }
+
+        Point pointI = this.strandLines.get(currStrand).getScaledPoint((double) (iRadio - 1) / this.radio);
+        Point pointF = this.strandLines.get(counterclockwiseNeighbor).getScaledPoint((double) (iRadio-1) / this.radio);
+        Bridge bridgeCc = new Bridge(iRadio - 1, currStrand, counterclockwiseNeighbor, pointI, pointF, "simulate");
+        bridgesMade.add(bridgeCc);
+        ArrayList<Bridge> counterClockPath = pathMaker(counterclockwiseNeighbor, limitZone, record-1, targetStrand, bridgesMade);
+        bridgesMade.remove(bridgeCc);
+
+        pointI = this.strandLines.get(currStrand).getScaledPoint((double) (iRadio - 1) / this.radio);
+        pointF = this.strandLines.get(clockwiseNeighbor).getScaledPoint((double) (iRadio-1) / this.radio);
+        Bridge bridgeC = new Bridge(iRadio - 1, currStrand, clockwiseNeighbor, pointI, pointF, "simulate");
+        bridgesMade.add(bridgeC);
+        ArrayList<Bridge> clockWisePath = pathMaker(clockwiseNeighbor, limitZone, record-1, targetStrand, bridgesMade);
+        bridgesMade.remove(bridgeC);
+
+        return null;
+
+    }
+
+    public int findNextZone(int iRadio, ArrayList<Bridge> neighborC, ArrayList<Bridge> neighborCc) {
+        Optional<Bridge> endZone = neighborC.stream().filter(candidate -> candidate.getDistance() < iRadio).findFirst();
+        int zoneValue = -1;
+        if (endZone.isPresent()) {
+            zoneValue = endZone.get().getDistance();
+        }
+        endZone = neighborCc.stream().filter(candidate -> candidate.getDistance() < iRadio).findFirst();
+        if (endZone.isPresent() && zoneValue < endZone.get().getDistance()) {
+            zoneValue = endZone.get().getDistance();
+        }
+
+        return zoneValue;
+    }
 
 }
