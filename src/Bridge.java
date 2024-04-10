@@ -46,6 +46,14 @@ public final class Bridge {
         canvas.erase(this);
     }
 
+    /**
+     * Copies the bridge.
+     * @return A new instance of Bridge with the same parameters as the original.
+     */
+    public Bridge copy() {
+        return new Bridge(this.distance, this.initialStrand, this.finalStrand, this.initialPoint, this.finalPoint, this.color);
+    }
+
     public int getDistance() {
         return distance;
     }
