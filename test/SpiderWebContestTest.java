@@ -93,6 +93,14 @@ public class SpiderWebContestTest {
                 assertEquals(favoriteStrand, contest.simulate(strandCount, favoriteStrand, bridges, index).getCurrentStrand());
             }
 
+            bridges = new int[][]{{10, 0}, {30, 0}, {50, 0}, {20, 1}, {40, 1}, {60, 1}, {100, 2}};
+            favoriteStrand = 2;
+            strandCount = 3;
+
+            for (int index = 0; index < strandCount; index++) {
+                assertEquals(favoriteStrand, contest.simulate(strandCount, favoriteStrand, bridges, index).getCurrentStrand());
+            }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

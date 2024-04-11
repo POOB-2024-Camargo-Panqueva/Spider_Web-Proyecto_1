@@ -171,6 +171,14 @@ public class SpiderWebContest {
         return currentStrand;
     }
 
+    private Bridge buildBridge(int distance, int initialStrand, int finalStrand, SpiderWeb spiderWeb) {
+        String bridgeColor = String.format("%s-%s", initialStrand, distance);
+        Point initialPoint = spiderWeb.getStrands().get(initialStrand).getScaledPoint((double) distance / spiderWeb.getRadio());
+        Point finalPoint = spiderWeb.getStrands().get(finalStrand).getScaledPoint((double) distance / spiderWeb.getRadio());
+
+        return new Bridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, bridgeColor);
+    }
+
     public ArrayList<Bridge> buildBridges(int initialStrand, int finalStrand, int remainingAttempts, ArrayList<Bridge> builtBridges, SpiderWeb spiderWeb) {
 
         if (SOLUTION_FOUND) {
@@ -208,22 +216,16 @@ public class SpiderWebContest {
             }
 
             // TODO: Remove duplication code with $1
-
-            String bridgeColor = String.format("%s-%s", newBridgeInitialStrand, distance);
-            Point initialPoint = spiderWeb.getStrands().get(newBridgeInitialStrand).getScaledPoint((double) distance / spiderWeb.getRadio());
-            Point finalPoint = spiderWeb.getStrands().get(newBridgeFinalStrand).getScaledPoint((double) distance / spiderWeb.getRadio());
-
-            Bridge newBridge =
-                    new Bridge(distance, newBridgeInitialStrand, newBridgeFinalStrand, initialPoint, finalPoint, bridgeColor);
+            Bridge newBridge = this.buildBridge(distance, newBridgeInitialStrand, newBridgeFinalStrand, spiderWeb);
 
             ArrayList<Bridge> newBridges = new ArrayList<>(builtBridges);
             newBridges.add(newBridge);
 
             SpiderWeb clonedSpiderWeb = copySpiderWeb(spiderWeb);
-            clonedSpiderWeb.addBridge(bridgeColor, distance, newBridgeInitialStrand);
+            clonedSpiderWeb.addBridge(newBridge.getColor(), distance, newBridgeInitialStrand);
 
-            ArrayList<Bridge> previousResult = buildBridges(initialStrand, finalStrand, remainingAttempts - 1, newBridges, clonedSpiderWeb);
-            results.add(previousResult);
+            ArrayList<Bridge> result = buildBridges(initialStrand, finalStrand, remainingAttempts - 1, newBridges, clonedSpiderWeb);
+            results.add(result);
         }
 
         for (Bridge bridge : currentBridges) {
@@ -244,22 +246,16 @@ public class SpiderWebContest {
                 }
 
                 // TODO: Remove duplication code with $1
-
-                String bridgeColor = String.format("%s-%s", newBridgeInitialStrand, distance);
-                Point initialPoint = spiderWeb.getStrands().get(newBridgeInitialStrand).getScaledPoint((double) distance / spiderWeb.getRadio());
-                Point finalPoint = spiderWeb.getStrands().get(newBridgeFinalStrand).getScaledPoint((double) distance / spiderWeb.getRadio());
-
-                Bridge newBridge =
-                        new Bridge(distance, newBridgeInitialStrand, newBridgeFinalStrand, initialPoint, finalPoint, bridgeColor);
+                Bridge newBridge = this.buildBridge(distance, newBridgeInitialStrand, newBridgeFinalStrand, spiderWeb);
 
                 ArrayList<Bridge> newBridges = new ArrayList<>(builtBridges);
                 newBridges.add(newBridge);
 
                 SpiderWeb clonedSpiderWeb = copySpiderWeb(spiderWeb);
-                clonedSpiderWeb.addBridge(bridgeColor, distance, newBridgeInitialStrand);
+                clonedSpiderWeb.addBridge(newBridge.getColor(), distance, newBridgeInitialStrand);
 
-                ArrayList<Bridge> previousResult = buildBridges(initialStrand, finalStrand, remainingAttempts - 1, newBridges, clonedSpiderWeb);
-                results.add(previousResult);
+                ArrayList<Bridge> result = buildBridges(initialStrand, finalStrand, remainingAttempts - 1, newBridges, clonedSpiderWeb);
+                results.add(result);
             }
         }
 
@@ -284,7 +280,9 @@ public class SpiderWebContest {
             return null;
         }
 
-        MessageHandler.showInfo("Solution found", "The solution has been found and will start when this dialog is closed.");
+        if (!SpiderWeb.TEST_MODE)
+            MessageHandler.showInfo("Solution found", "The solution has been found and will start when this dialog is closed.");
+
         for (Bridge bridge : result) {
             spiderWeb.addBridge(bridge.getColor(), bridge.getDistance(), bridge.getInitialStrand());
         }
