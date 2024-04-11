@@ -266,21 +266,22 @@ public class SpiderWebContest {
         return results.stream().filter(Objects::nonNull).findFirst().orElse(null);
     }
 
-    public void simulate(int strandCount, int favoriteStrand, int[][] bridges, int initialStrand) throws Exception {
+    public SpiderWeb simulate(int strandCount, int favoriteStrand, int[][] bridges, int initialStrand) throws Exception {
         SOLUTION_FOUND = false;
 
         SpiderWeb spiderWeb = new SpiderWeb(strandCount, favoriteStrand, bridges);
-        spiderWeb.makeVisible();
+
+        if (SpiderWeb.TEST_MODE)
+            spiderWeb.makeInvisible();
+        else
+            spiderWeb.makeVisible();
 
         ArrayList<Integer> solution = solve(strandCount, favoriteStrand, bridges);
-
-        System.out.println(solution + " " + solution.get(initialStrand));
-
         ArrayList<Bridge> result = buildBridges(initialStrand, favoriteStrand, solution.get(initialStrand), new ArrayList<>(), spiderWeb);
 
         if (result == null) {
             MessageHandler.showError("No solution found");
-            return;
+            return null;
         }
 
         MessageHandler.showInfo("Solution found", "The solution has been found and will start when this dialog is closed.");
@@ -289,5 +290,7 @@ public class SpiderWebContest {
         }
 
         spiderWeb.moveSpiderTo(favoriteStrand);
+
+        return spiderWeb;
     }
 }

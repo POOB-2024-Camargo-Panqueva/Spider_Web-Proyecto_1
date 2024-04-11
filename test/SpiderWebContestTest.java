@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -5,6 +6,12 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SpiderWebContestTest {
+
+    @BeforeEach
+    void setUp() {
+        SpiderWeb.TEST_MODE = true;
+    }
+
     @Test
     public void testDefaultCasesForSpiderWalkProblem() {
         int[][] input1 = {{20, 0}, {40, 2}, {60, 2}, {80, 6}, {100, 4}};
@@ -36,9 +43,9 @@ public class SpiderWebContestTest {
     @Test
     public void testGetFinalStrandBySimulatingMovement() {
 
-        SpiderWeb spiderWeb = null;
-        SpiderWebContest contest = null;
-        int[][] bridges = null;
+        SpiderWeb spiderWeb;
+        SpiderWebContest contest;
+        int[][] bridges;
 
         try {
             contest = new SpiderWebContest();
@@ -64,6 +71,28 @@ public class SpiderWebContestTest {
             assertEquals(2, contest.getFinalStrandBySimulatingMovement(0, bridgesList));
             assertEquals(1, contest.getFinalStrandBySimulatingMovement(1, bridgesList));
             assertEquals(0, contest.getFinalStrandBySimulatingMovement(2, bridgesList));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void testSimulateWithDifferentInputs() {
+
+        SpiderWebContest contest;
+        int[][] bridges;
+
+        try {
+            contest = new SpiderWebContest();
+
+            bridges = new int[][]{{20, 0}, {40, 2}, {60, 2}, {80, 6}, {100, 4}};
+            int favoriteStrand = 5;
+            int strandCount = 7;
+
+            for (int index = 0; index < strandCount; index++) {
+                assertEquals(favoriteStrand, contest.simulate(strandCount, favoriteStrand, bridges, index).getCurrentStrand());
+            }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
