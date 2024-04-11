@@ -2,7 +2,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -162,7 +161,7 @@ class SpiderWebTest {
      */
     @Test
     public void testAddStrand() {
-        int initialStrands = spiderWeb.getStrands();
+        int initialStrands = spiderWeb.getStrandCount();
 
         int numOfNewStrands = 5;
 
@@ -170,7 +169,7 @@ class SpiderWebTest {
             spiderWeb.addStrand();
         }
 
-        assertEquals(spiderWeb.getStrands(), initialStrands + numOfNewStrands);
+        assertEquals(spiderWeb.getStrandCount(), initialStrands + numOfNewStrands);
 
         assertTrue(spiderWeb.isLastActionWasOk());
     }
@@ -181,7 +180,7 @@ class SpiderWebTest {
         spiderWeb.addStrand();
         spiderWeb.addStrand();
 
-        int moveTo = spiderWeb.getStrands() - 1;
+        int moveTo = spiderWeb.getStrandCount() - 1;
 
         spiderWeb.moveSpiderTo(moveTo);
         assertEquals(spiderWeb.getCurrentStrand(), moveTo);
@@ -189,7 +188,7 @@ class SpiderWebTest {
 
         spiderWeb.sitSpiderOnCenter();
 
-        moveTo = spiderWeb.getStrands() - 3;
+        moveTo = spiderWeb.getStrandCount() - 3;
 
         spiderWeb.moveSpiderTo(moveTo);
         assertEquals(spiderWeb.getCurrentStrand(), moveTo);
@@ -209,7 +208,7 @@ class SpiderWebTest {
         int initialBridges = spiderWeb.getBridges().size();
 
         spiderWeb.addStrand();
-        spiderWeb.addBridge("ColorTestNewStrand", 50, spiderWeb.getStrands() - 1);
+        spiderWeb.addBridge("ColorTestNewStrand", 50, spiderWeb.getStrandCount() - 1);
 
         assertEquals(initialBridges + 1, spiderWeb.getBridges().size());
         assertTrue(spiderWeb.isLastActionWasOk());
@@ -225,7 +224,7 @@ class SpiderWebTest {
     @Test
     public void testExpandSpiderWeb() {
         int initialBridge = spiderWeb.getBridges().size();
-        int initialStrands = spiderWeb.getStrands();
+        int initialStrands = spiderWeb.getStrandCount();
 
 
         int previousRadio = spiderWeb.getRadio();
@@ -235,7 +234,7 @@ class SpiderWebTest {
 
         assertEquals(previousRadio + expandBy, spiderWeb.getRadio());
         assertEquals(initialBridge, spiderWeb.getBridges().size());
-        assertEquals(initialStrands, spiderWeb.getStrands());
+        assertEquals(initialStrands, spiderWeb.getStrandCount());
         assertTrue(spiderWeb.isLastActionWasOk());
     }
 

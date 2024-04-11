@@ -1,20 +1,21 @@
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Set;
 
 public final class SpiderWeb {
 
     public static boolean TEST_MODE = false;
 
-    private final ArrayList<Strand> strandStrands;
+    private final ArrayList<Strand> strands;
     private final ArrayList<Bridge> bridges;
-    private final ArrayList<Bridge> usedBridges = new ArrayList<Bridge>();
-    HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
+    private final ArrayList<Bridge> usedBridges;
     private final Spider spider;
 
     private boolean lastActionWasOk;
     private boolean isVisible;
     private int currentStrand;
-    private int strands;
+    private int strandCount;
     private int radio;
 
     /**
@@ -24,15 +25,16 @@ public final class SpiderWeb {
      * @param radio   The radius of the spider web.
      */
     public SpiderWeb(int strands, int radio) {
-        this.strands = strands;
+        this.strandCount = strands;
         this.radio = radio;
         this.currentStrand = -1;
 
         this.isVisible = false;
 
         this.spider = new Spider(new Point(Canvas.CENTER));
-        this.strandStrands = new ArrayList<>(this.strands);
+        this.strands = new ArrayList<>(this.strandCount);
         this.bridges = new ArrayList<>();
+        this.usedBridges = new ArrayList<>();
 
         this.generateStrandLines();
     }
@@ -40,12 +42,14 @@ public final class SpiderWeb {
     /**
      * Constructs a SpiderWeb with the specified number of strands, favorite strands, and bridges.
      *
-     * @param strands         The number of strands in the spider web.
-     * @param favoriteStrands The number of favorite strands in the spider web.
-     * @param bridges         The bridges in the spider web.
+     * @param strands        The number of strands in the spider web.
+     * @param favoriteStrand The number of favorite strands in the spider web.
+     * @param bridges        The bridges in the spider web.
      * @throws Exception If the input is invalid.
      */
-    public SpiderWeb(int strands, int favoriteStrands, int[][] bridges) throws Exception {
+    public SpiderWeb(int strands, int favoriteStrand, int[][] bridges) throws Exception {
+
+        // TODO: Add favorite strand logic
 
         ArrayList<Bridge> temporalBridges = new ArrayList<>();
         int radio = 0;
@@ -78,17 +82,18 @@ public final class SpiderWeb {
 
         final int STRAND_PADDING = 20;
 
-        this.strands = strands;
+        this.strandCount = strands;
         this.radio = radio + STRAND_PADDING;
         this.currentStrand = -1;
 
         this.isVisible = false;
 
         this.spider = new Spider(new Point(Canvas.CENTER));
-        this.strandStrands = new ArrayList<>(this.strands);
+        this.strands = new ArrayList<>(this.strandCount);
         this.generateStrandLines();
 
         this.bridges = new ArrayList<>();
+        this.usedBridges = new ArrayList<>();
 
         for (Bridge bridge : temporalBridges) {
             this.addBridge(bridge.getColor(), bridge.getDistance(), bridge.getInitialStrand());
@@ -101,7 +106,7 @@ public final class SpiderWeb {
      * @param targetStrand The target strand to which the spider will move.
      * @return ArrayList of Points representing the movement points.
      */
-    private ArrayList<Point> getShortestWay(int targetStrand) {
+    private ArrayList<Point> getMovementPoints(int targetStrand) {
         bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
 
         ArrayList<Point> movementPoints = new ArrayList<>();
@@ -109,7 +114,7 @@ public final class SpiderWeb {
         int currentStrand = targetStrand;
         int currentDistance = this.radio;
 
-        movementPoints.add(strandStrands.get(targetStrand).getEnd());
+        movementPoints.add(strands.get(targetStrand).getEnd());
 
         while (flag) {
             int candidates = 0;
@@ -153,7 +158,7 @@ public final class SpiderWeb {
 
         this.spider.resetTraceLines();
 
-        if (targetStrand < 0 || targetStrand >= this.strands) {
+        if (targetStrand < 0 || targetStrand >= this.strandCount) {
 
             if (isVisible)
                 MessageHandler.showError("Invalid strand", "The strand " + targetStrand + " is not valid");
@@ -169,7 +174,7 @@ public final class SpiderWeb {
             return;
         }
 
-        ArrayList<Point> movementPoints = this.getShortestWay(targetStrand);
+        ArrayList<Point> movementPoints = this.getMovementPoints(targetStrand);
         Collections.reverse(movementPoints);
 
         this.spider.moveTo(movementPoints);
@@ -182,12 +187,12 @@ public final class SpiderWeb {
      * Adds a strand to the spider web.
      */
     public void addStrand() {
-        this.strands++;
+        this.strandCount++;
 
         this.generateStrandLines();
 
         if (this.currentStrand != -1)
-            this.spider.setPosition(new Point(this.strandStrands.get(currentStrand).getEnd()));
+            this.spider.setPosition(new Point(this.strands.get(currentStrand).getEnd()));
 
         ArrayList<Bridge> temporalBridges = new ArrayList<>();
         ArrayList<Bridge> bridgesClone = new ArrayList<>(this.bridges);
@@ -227,7 +232,7 @@ public final class SpiderWeb {
         this.draw();
 
         if (this.currentStrand != -1)
-            this.spider.setPosition(new Point(this.strandStrands.get(currentStrand).getEnd()));
+            this.spider.setPosition(new Point(this.strands.get(currentStrand).getEnd()));
 
         lastActionWasOk = true;
     }
@@ -248,7 +253,7 @@ public final class SpiderWeb {
             return;
         }
 
-        ArrayList<Point> movementPoints = this.getShortestWay(this.currentStrand);
+        ArrayList<Point> movementPoints = this.getMovementPoints(this.currentStrand);
 
         this.spider.moveTo(movementPoints);
         this.currentStrand = -1;
@@ -261,6 +266,7 @@ public final class SpiderWeb {
      */
     public void sitSpiderOnCenter() {
 
+        // TODO: Animate sit action
         this.spider.resetTraceLines();
 
         if (this.currentStrand == -1) {
@@ -282,17 +288,17 @@ public final class SpiderWeb {
      * Generates strand lines based on the number of strands.
      */
     private void generateStrandLines() {
-        for (Strand strand : this.strandStrands) {
+        for (Strand strand : this.strands) {
             strand.erase();
         }
 
-        this.strandStrands.clear();
+        this.strands.clear();
 
-        for (int index = this.strands; index >= 0; index--) {
-            double angle = Math.toRadians((double) 360 / this.strands * index);
+        for (int index = this.strandCount; index >= 0; index--) {
+            double angle = Math.toRadians((double) 360 / this.strandCount * index);
             int x = (int) (this.radio * Math.cos(angle));
             int y = (int) (this.radio * Math.sin(angle));
-            this.strandStrands.add(new Strand(new Point(Canvas.CENTER), new Point(Canvas.CENTER.x + x, Canvas.CENTER.y + y)));
+            this.strands.add(new Strand(new Point(Canvas.CENTER), new Point(Canvas.CENTER.x + x, Canvas.CENTER.y + y)));
         }
     }
 
@@ -315,6 +321,7 @@ public final class SpiderWeb {
         this.spider.makeInvisible();
         Canvas canvas = Canvas.getCanvas();
         canvas.setVisible(false);
+        // TODO: Make invisible each element on the canvas, but not the canvas itself
 
         lastActionWasOk = true;
     }
@@ -324,7 +331,7 @@ public final class SpiderWeb {
      */
     private void draw() {
         if (this.isVisible) {
-            this.strandStrands.forEach(Strand::draw);
+            this.strands.forEach(Strand::draw);
             this.bridges.forEach(Bridge::draw);
             this.spider.draw();
         }
@@ -334,12 +341,13 @@ public final class SpiderWeb {
      * Displays information about the spider web using a pop-up message.
      */
     public void printWebInfo() {
+        // TODO: Create individual methods for each type of information
         StringBuilder info = new StringBuilder();
 
         info.append(String.format("The spider is at the point [%s, %s]\n", this.spider.getPosition().x, this.spider.getPosition().y));
         info.append(String.format("The spider is at the strand %d\n", this.currentStrand));
         info.append(String.format("The spider web is %s\n", this.isVisible ? "visible" : "invisible"));
-        info.append(String.format("The spider web has %d strands\n", this.strands));
+        info.append(String.format("The spider web has %d strands\n", this.strandCount));
         info.append(String.format("The spider web has a radio of %d\n", this.radio));
         info.append(String.format("The spider web has %d bridges\n", this.bridges.size()));
 
@@ -359,30 +367,36 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
-    private boolean validBridge(String color, int distance, int initialStrand, int finalStrand) {
-        if (initialStrand < 0 || initialStrand >= this.strands) {
+    /**
+     * Checks if the bridge is invalid based on the specified color, distance, initial strand, and final strand.
+     *
+     * @param color         The color of the bridge
+     * @param distance      The distance of the bridge
+     * @param initialStrand The initial strand of the bridge
+     * @param finalStrand   The final strand of the bridge
+     * @return True if the bridge is invalid, otherwise false
+     */
+    private boolean isInvalidBridge(String color, int distance, int initialStrand, int finalStrand) {
+        if (initialStrand < 0 || initialStrand >= this.strandCount) {
 
             if (isVisible)
                 MessageHandler.showError("Invalid strand", "The strand " + initialStrand + " is not valid");
 
-            lastActionWasOk = false;
-            return false;
+            return true;
         }
         if (distance < 0 || distance > radio) {
 
             if (isVisible)
                 MessageHandler.showError("Invalid distance", "The distance " + distance + " is not valid");
 
-            lastActionWasOk = false;
-            return false;
+            return true;
         }
         if (this.bridges.stream().anyMatch(bridge -> bridge.getColor().equals(color))) {
 
             if (isVisible)
                 MessageHandler.showError("The bridge already exists", "The bridge with color " + color + " already exists");
 
-            lastActionWasOk = false;
-            return false;
+            return true;
         }
 
         boolean inConflict = this.bridges.stream().anyMatch(bridge -> bridge.getDistance() == distance && (
@@ -396,47 +410,31 @@ public final class SpiderWeb {
             if (isVisible)
                 MessageHandler.showError("Bridge in conflict", "Can't create two bridges with the same distance on adjacent strands");
 
-            lastActionWasOk = false;
-            return false;
+            return true;
         }
-        return true;
+
+        return false;
     }
 
     /**
-     * Adds a bridge to the spider web with the specified color, distance, and initial strand.
+     * Adds a bridge to the spider web with the specified color, distance, initial strand and type.
      *
      * @param color         The color of the bridge.
      * @param distance      The distance of the bridge.
      * @param initialStrand The initial strand of the bridge.
+     * @param type          The type of the bridge.
      */
-    public void addBridge(String color, int distance, int initialStrand) {
-
-        int finalStrand = initialStrand + 1;
-
-        if (!this.validBridge(color, distance, initialStrand, finalStrand)) {
-            return;
-        }
-
-        Point initialPoint = this.strandStrands.get(initialStrand).getScaledPoint((double) distance / this.radio);
-        Point finalPoint = this.strandStrands.get(finalStrand).getScaledPoint((double) distance / this.radio);
-
-        this.bridges.add(new Bridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
-
-        this.draw();
-
-        lastActionWasOk = true;
-    }
-
     public void addBridge(String color, int distance, int initialStrand, Bridge.Types type) {
 
         int finalStrand = initialStrand + 1;
 
-        if (!this.validBridge(color, distance, initialStrand, finalStrand)) {
+        if (this.isInvalidBridge(color, distance, initialStrand, finalStrand)) {
+            lastActionWasOk = false;
             return;
         }
 
-        Point initialPoint = this.strandStrands.get(initialStrand).getScaledPoint((double) distance / this.radio);
-        Point finalPoint = this.strandStrands.get(finalStrand).getScaledPoint((double) distance / this.radio);
+        Point initialPoint = this.strands.get(initialStrand).getScaledPoint((double) distance / this.radio);
+        Point finalPoint = this.strands.get(finalStrand).getScaledPoint((double) distance / this.radio);
 
         this.bridges.add(new Bridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color, type));
 
@@ -447,33 +445,33 @@ public final class SpiderWeb {
     }
 
     /**
+     * Adds a bridge to the spider web with the specified color, distance, and initial strand.
+     *
+     * @param color         The color of the bridge.
+     * @param distance      The distance of the bridge.
+     * @param initialStrand The initial strand of the bridge.
+     */
+    public void addBridge(String color, int distance, int initialStrand) {
+        this.addBridge(color, distance, initialStrand, Bridge.Types.NORMAL);
+    }
+
+    /**
      * Relocates a bridge with the specified color and updates its distance.
      *
      * @param color    The color of the bridge to relocate.
      * @param distance The new distance of the bridge.
      */
     public void relocateBridge(String color, int distance) {
-
-        Bridge targetBridge = null;
-
-        for (int i = 0; i < this.bridges.size(); i++) {
-            if (this.bridges.get(i).getColor().equals(color)) {
-                targetBridge = this.bridges.remove(i);
-                targetBridge.erase();
-                break;
-            }
-        }
+        Bridge targetBridge = this.removeBridge(color);
 
         if (targetBridge == null) {
-
-            if (isVisible)
-                MessageHandler.showError("Bridge not found", "The bridge with color: " + color + " was not found");
-
             lastActionWasOk = false;
             return;
         }
 
-        this.addBridge(String.format("%s-%s", targetBridge.getInitialStrand(), distance), distance, targetBridge.getInitialStrand());
+        String bridgeColorId = String.format("%s-%s", targetBridge.getInitialStrand(), distance);
+
+        this.addBridge(bridgeColorId, distance, targetBridge.getInitialStrand());
 
         lastActionWasOk = true;
     }
@@ -482,13 +480,14 @@ public final class SpiderWeb {
      * Removes a bridge with the specified color from the spider web.
      *
      * @param color The color of the bridge to remove.
+     * @return The removed bridge, or null if no bridge was removed.
      */
-    public void removeBridge(String color) {
+    public Bridge removeBridge(String color) {
         Bridge targetBridge = null;
 
         for (int i = 0; i < this.bridges.size(); i++) {
             if (this.bridges.get(i).getColor().equals(color)) {
-                if(this.bridges.get(i).getType() == Bridge.Types.FIXED){
+                if (this.bridges.get(i).getType() == Bridge.Types.FIXED) {
                     MessageHandler.showError("You cannot delete a 'Fixed' Bridge");
                     break;
                 }
@@ -505,12 +504,13 @@ public final class SpiderWeb {
                 MessageHandler.showError("Bridge not found", "The bridge with color: " + color + " was not found");
 
             lastActionWasOk = false;
-            return;
+            return null;
         }
 
         this.draw();
-
         lastActionWasOk = true;
+
+        return targetBridge;
     }
 
     /**
@@ -531,7 +531,7 @@ public final class SpiderWeb {
             return;
         }
 
-        this.strandStrands.get(strand).setColor(color);
+        this.strands.get(strand).setColor(color);
 
         lastActionWasOk = true;
     }
@@ -547,18 +547,21 @@ public final class SpiderWeb {
         if (result == null) {
 
             if (isVisible)
-                MessageHandler.showError("Nothing was found to delete", "");
+                MessageHandler.showError("Favorite strand not found", "The favorite strand with color: " + color + " was not found");
 
             lastActionWasOk = false;
             return;
         }
 
-        this.strandStrands.get(result).setColor("gray");
+        this.strands.get(result).setColor("gray");
         MessageHandler.showInfo("The Strand " + color + " was deleted");
 
         lastActionWasOk = true;
     }
 
+    /**
+     * Prints the favorite strands of the spider.
+     */
     public void printFavoriteStrands() {
         StringBuilder info = new StringBuilder();
 
@@ -575,6 +578,9 @@ public final class SpiderWeb {
         lastActionWasOk = true;
     }
 
+    /**
+     * Clears the bridges used by the spider.
+     */
     public void resetUsedBridges() {
         usedBridges.clear();
     }
@@ -596,8 +602,8 @@ public final class SpiderWeb {
         return lastActionWasOk;
     }
 
-    public ArrayList<Strand> getStrandLines() {
-        return strandStrands;
+    public ArrayList<Strand> getStrands() {
+        return strands;
     }
 
     public ArrayList<Bridge> getBridges() {
@@ -608,8 +614,8 @@ public final class SpiderWeb {
         return spider;
     }
 
-    public int getStrands() {
-        return strands;
+    public int getStrandCount() {
+        return strandCount;
     }
 
     public int getRadio() {
@@ -629,127 +635,6 @@ public final class SpiderWeb {
     }
 
     public ArrayList<Bridge> getUsedBridges() {
-        Collections.reverse(usedBridges);
         return usedBridges;
     }
-
-    public void simulate(int initialStrand, int finalStrand) {
-        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
-        HashMap<Integer, ArrayList<Bridge>> bridgesByStrands = new HashMap<>();
-
-        for (int i = 0; i < this.strands; i++) {
-            bridgesByStrands.put(i, new ArrayList<>());
-        }
-
-        for (Bridge bridge : bridges) {
-            bridgesByStrands.get(bridge.getInitialStrand() - 1).add(bridge);
-            bridgesByStrands.get(bridge.getFinalStrand() - 1).add(bridge);
-        }
-
-        int currentStrand = finalStrand;
-        int clockwiseNeighbor = -1;
-        int counterclockwiseNeighbor = -1;
-        int currentRadio = this.radio;
-        ArrayList<Point> movementPoints = new ArrayList<>();
-
-        movementPoints.add(strandStrands.get(finalStrand).getEnd());
-
-        while (true) {
-            clockwiseNeighbor = currentStrand - 1;
-            counterclockwiseNeighbor = currentStrand + 1;
-            if (currentStrand == 1) {
-                clockwiseNeighbor = strands;
-            } else if (currentStrand == strands) {
-                counterclockwiseNeighbor = 1;
-            }
-        }
-    }
-
-    public void sortBridges() {
-        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
-    }
-
-    public void createBridgesHashmap() {
-        for (int i = 0; i < this.strands; i++) {
-            bridgesByStrands.put(i, new ArrayList<>());
-        }
-
-        for (Bridge bridge : bridges) {
-            bridgesByStrands.get(bridge.getInitialStrand() - 1).add(bridge);
-            bridgesByStrands.get(bridge.getFinalStrand() - 1).add(bridge);
-        }
-    }
-
-    public ArrayList<Integer> solution = new ArrayList<Integer>();
-
-    public void findSolution() {
-        //TODO: we need to save the solution in spiderweb
-
-    }
-
-    private ArrayList<Bridge> pathMaker(int currStrand, int iRadio, int record, int targetStrand, ArrayList<Bridge> bridgesMade) {
-
-        if (record < 0) {
-            return null;
-        }
-
-        int clockwiseNeighbor = currStrand - 1;
-        int counterclockwiseNeighbor = currStrand + 1;
-        if (currStrand == 1) {
-            clockwiseNeighbor = strands;
-        } else if (currStrand == strands) {
-            counterclockwiseNeighbor = 1;
-        }
-
-        int limitZone = findNextZone(iRadio, bridgesByStrands.get(clockwiseNeighbor), bridgesByStrands.get(counterclockwiseNeighbor));
-
-        if (limitZone == -1 && currStrand == targetStrand) {
-            return bridgesMade;
-        }
-        if (limitZone == -1) {
-            return null;
-        }
-
-        Optional<Bridge> takeABridge = bridgesByStrands.get(currStrand).stream().filter(candidate -> candidate.getInitialStrand() == currStrand).findFirst();
-
-        ArrayList<Bridge> straight;
-
-        if (takeABridge.isPresent()) {
-            straight = pathMaker(takeABridge.get().getFinalStrand(), limitZone, record, targetStrand, bridgesMade);
-        } else {
-            straight = pathMaker(currStrand, limitZone, record, targetStrand, bridgesMade);
-        }
-
-        Point pointI = this.strandStrands.get(currStrand).getScaledPoint((double) (iRadio - 1) / this.radio);
-        Point pointF = this.strandStrands.get(counterclockwiseNeighbor).getScaledPoint((double) (iRadio - 1) / this.radio);
-        Bridge bridgeCc = new Bridge(iRadio - 1, currStrand, counterclockwiseNeighbor, pointI, pointF, "simulate");
-        bridgesMade.add(bridgeCc);
-        ArrayList<Bridge> counterClockPath = pathMaker(counterclockwiseNeighbor, limitZone, record - 1, targetStrand, bridgesMade);
-        bridgesMade.remove(bridgeCc);
-
-        pointI = this.strandStrands.get(currStrand).getScaledPoint((double) (iRadio - 1) / this.radio);
-        pointF = this.strandStrands.get(clockwiseNeighbor).getScaledPoint((double) (iRadio - 1) / this.radio);
-        Bridge bridgeC = new Bridge(iRadio - 1, currStrand, clockwiseNeighbor, pointI, pointF, "simulate");
-        bridgesMade.add(bridgeC);
-        ArrayList<Bridge> clockWisePath = pathMaker(clockwiseNeighbor, limitZone, record - 1, targetStrand, bridgesMade);
-        bridgesMade.remove(bridgeC);
-
-        return null;
-
-    }
-
-    public int findNextZone(int iRadio, ArrayList<Bridge> neighborC, ArrayList<Bridge> neighborCc) {
-        Optional<Bridge> endZone = neighborC.stream().filter(candidate -> candidate.getDistance() < iRadio).findFirst();
-        int zoneValue = -1;
-        if (endZone.isPresent()) {
-            zoneValue = endZone.get().getDistance();
-        }
-        endZone = neighborCc.stream().filter(candidate -> candidate.getDistance() < iRadio).findFirst();
-        if (endZone.isPresent() && zoneValue < endZone.get().getDistance()) {
-            zoneValue = endZone.get().getDistance();
-        }
-
-        return zoneValue;
-    }
-
 }
