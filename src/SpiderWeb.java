@@ -89,6 +89,7 @@ public final class SpiderWeb {
         this.isVisible = false;
 
         this.spider = new Spider(new Point(Canvas.CENTER));
+        this.spider.addFavoriteStrand("default", favoriteStrand);
         this.strands = new ArrayList<>(this.strandCount);
         this.generateStrandLines();
 
@@ -610,12 +611,25 @@ public final class SpiderWeb {
         return bridges;
     }
 
+    public int[][] getBridgesAsConsoleInput() {
+        int[][] bridges = new int[this.bridges.size()][2];
+        for (int i = 0; i < this.bridges.size(); i++) {
+            bridges[i][0] = this.bridges.get(i).getDistance();
+            bridges[i][1] = this.bridges.get(i).getInitialStrand();
+        }
+        return bridges;
+    }
+
     public Spider getSpider() {
         return spider;
     }
 
     public int getStrandCount() {
         return strandCount;
+    }
+
+    public int getFavoriteStrand() {
+        return spider.getFavoriteStrands().get("default");
     }
 
     public int getRadio() {
