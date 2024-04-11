@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SpiderWebContestTest {
     @Test
-    public void testDefaultCasesForSpiderWalkProblem() throws Exception {
-        int[][] input1 = {{20, 1}, {40, 3}, {60, 3}, {80, 7}, {100, 5}};
+    public void testDefaultCasesForSpiderWalkProblem() {
+        int[][] input1 = {{20, 0}, {40, 2}, {60, 2}, {80, 6}, {100, 4}};
 
         ArrayList<Integer> output1 = new ArrayList<>();
         output1.add(2);
@@ -19,9 +19,9 @@ public class SpiderWebContestTest {
         output1.add(2);
         SpiderWebContest spiderWeb1 = new SpiderWebContest();
 
-        assertEquals(output1, spiderWeb1.solve(7, 6, input1));
+        assertEquals(output1, spiderWeb1.solve(7, 5, input1));
 
-        int[][] input2 = {{1,1},{2,2},{3,3},{4,4}};
+        int[][] input2 = {{1, 0}, {2, 1}, {3, 2}, {4, 3}};
 
         ArrayList<Integer> output2 = new ArrayList<>();
         output2.add(1);
@@ -30,6 +30,6 @@ public class SpiderWebContestTest {
         output2.add(1);
         SpiderWebContest spiderWeb2 = new SpiderWebContest();
 
-        assertEquals(output2, spiderWeb2.solve(4, 2, input2));
+        assertEquals(output2, spiderWeb2.solve(4, 1, input2));
     }
 }

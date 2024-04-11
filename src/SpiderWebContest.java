@@ -46,21 +46,19 @@ public class SpiderWebContest {
     }
 
     public ArrayList<Integer> solve(int numOfStrands, int favoriteStrand, int[][] bridges) {
-        int prevFavoriteStrand = favoriteStrand - 1;
-
         int[] strandCounts = new int[numOfStrands + 1];
 
         ArrayList<int[]> lines = new ArrayList<>();
 
         for (int[] bridge : bridges) {
             int d = bridge[0];
-            int t = bridge[1] - 1;
+            int t = bridge[1];
 
             lines.add(new int[]{d, t});
         }
 
         for (int i = 0; i < numOfStrands; i++) {
-            processUpdates(strandCounts, i, i, Math.min(Math.abs(prevFavoriteStrand - i), numOfStrands - Math.abs(prevFavoriteStrand - i)));
+            processUpdates(strandCounts, i, i, Math.min(Math.abs(favoriteStrand - i), numOfStrands - Math.abs(favoriteStrand - i)));
         }
 
         lines.sort((a, b) -> Integer.compare(b[0], a[0]));
