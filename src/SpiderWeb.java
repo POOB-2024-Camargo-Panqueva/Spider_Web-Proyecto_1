@@ -107,6 +107,7 @@ public final class SpiderWeb {
      * @return ArrayList of Points representing the movement points.
      */
     private ArrayList<Point> getMovementPoints(int targetStrand) {
+        ArrayList<Bridge> bridges = new ArrayList<>(this.bridges);
         bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
 
         ArrayList<Point> movementPoints = new ArrayList<>();
@@ -128,17 +129,16 @@ public final class SpiderWeb {
                 if (currentStrand == bridge.getFinalStrand()) {
                     movementPoints.add(bridge.getFinalPoint());
                     movementPoints.add(bridge.getInitialPoint());
-                    usedBridges.add(bridge);
                     currentStrand = bridge.getInitialStrand();
-                    currentDistance = bridge.getDistance();
-                    break;
                 } else {
                     movementPoints.add(bridge.getInitialPoint());
                     movementPoints.add(bridge.getFinalPoint());
-                    usedBridges.add(bridge);
                     currentStrand = bridge.getFinalStrand();
-                    currentDistance = bridge.getDistance();
                 }
+
+                currentDistance = bridge.getDistance();
+                usedBridges.add(bridge);
+                break;
             }
 
             flag = candidates != 0;
@@ -426,7 +426,7 @@ public final class SpiderWeb {
      */
     public void addBridge(String color, int distance, int initialStrand, Bridge.Types type) {
 
-        int finalStrand = initialStrand + 1;
+        int finalStrand = initialStrand == this.strandCount - 1 ? 0 : initialStrand + 1;
 
         if (this.isInvalidBridge(color, distance, initialStrand, finalStrand)) {
             lastActionWasOk = false;
