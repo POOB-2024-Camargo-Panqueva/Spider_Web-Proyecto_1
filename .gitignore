@@ -1,5 +1,5 @@
 /.idea/
 /out/
-/src/Main.java
-/*.bluej
-/*.iml
+**/Main.java
+**/*.bluej
+**/*.iml
