@@ -1,3 +1,9 @@
+package spiderweb;
+
+import spiderweb.Bridge;
+import spiderweb.SpiderWeb;
+import utilities.MessageHandler;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;

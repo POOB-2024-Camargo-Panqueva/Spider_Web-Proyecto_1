@@ -1,3 +1,7 @@
+package spiderweb;
+
+import shape.Canvas;
+
 import java.awt.*;
 import java.awt.geom.Line2D;
 
@@ -12,7 +16,7 @@ public final class Bridge {
     private final Types type;
 
     /**
-     * Constructs a new instance of Bridge with the specified parameters.
+     * Constructs a new instance of spiderweb.Bridge with the specified parameters.
      *
      * @param distance      The distance of the bridge.
      * @param initialStrand The initial strand connected by the bridge.
@@ -49,7 +53,7 @@ public final class Bridge {
      * Draws the bridge on the canvas.
      */
     public void draw() {
-        Canvas canvas = Canvas.getCanvas();
+        shape.Canvas canvas = Canvas.getCanvas();
         canvas.draw(this, this.color, new Line2D.Double(initialPoint.getX(), initialPoint.getY(), finalPoint.getX(), finalPoint.getY()));
     }
 
@@ -57,14 +61,14 @@ public final class Bridge {
      * Erases the bridge from the canvas.
      */
     public void erase() {
-        Canvas canvas = Canvas.getCanvas();
+        shape.Canvas canvas = shape.Canvas.getCanvas();
         canvas.erase(this);
     }
 
     /**
      * Copies the bridge.
      *
-     * @return A new instance of Bridge with the same parameters as the original.
+     * @return A new instance of spiderweb.Bridge with the same parameters as the original.
      */
     public Bridge copy() {
         return new Bridge(this.distance, this.initialStrand, this.finalStrand, this.initialPoint, this.finalPoint, this.color);
@@ -100,7 +104,7 @@ public final class Bridge {
 
     @Override
     public String toString() {
-        return String.format("Initial Strand: %d, Final Strand: %d, Distance: %d, Color: %s", initialStrand, finalStrand, distance, color);
+        return String.format("Initial spiderweb.Strand: %d, Final spiderweb.Strand: %d, Distance: %d, Color: %s", initialStrand, finalStrand, distance, color);
     }
 
     public boolean equals(Bridge bridge) {

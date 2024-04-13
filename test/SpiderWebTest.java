@@ -1,5 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import shape.Canvas;
+import spiderweb.Bridge;
+import spiderweb.SpiderWeb;
 
 import java.awt.*;
 import java.util.HashSet;
@@ -57,7 +60,7 @@ class SpiderWebTest {
 
         assertFalse(spiderWeb.lastActionWasOk());
         assertEquals(spiderWeb.getCurrentStrand(), -1);
-        assertEquals(spiderWeb.getSpider().getPosition(), new Point(Canvas.CENTER));
+        assertEquals(spiderWeb.getSpider().getPosition(), new Point(shape.Canvas.CENTER));
     }
 
     @Test
@@ -94,7 +97,7 @@ class SpiderWebTest {
      */
     @Test
     public void testAddBridgeWithInvalidParams() {
-        spiderWeb.addBridge("ColorTest1", 16, 1); //Valid Bridge
+        spiderWeb.addBridge("ColorTest1", 16, 1); //Valid spiderweb.Bridge
 
         HashSet<Bridge> previousBridges = new HashSet<>(spiderWeb.getBridges());
 
@@ -124,8 +127,8 @@ class SpiderWebTest {
      */
     @Test
     public void testAddOrRelocateBridgesWithConflictInTheirRadius() {
-        spiderWeb.addBridge("ColorTestValid1", 116, 1); //Valid Strand
-        spiderWeb.addBridge("ColorTestValid2", 16, 0); //Valid Strand
+        spiderWeb.addBridge("ColorTestValid1", 116, 1); //Valid spiderweb.Strand
+        spiderWeb.addBridge("ColorTestValid2", 16, 0); //Valid spiderweb.Strand
 
         spiderWeb.addBridge("ColorTestSameStrand1", 16, 0);
         assertFalse(spiderWeb.lastActionWasOk());

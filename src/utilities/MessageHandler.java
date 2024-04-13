@@ -1,3 +1,7 @@
+package utilities;
+
+import spiderweb.SpiderWeb;
+
 import javax.swing.*;
 
 public abstract class MessageHandler {

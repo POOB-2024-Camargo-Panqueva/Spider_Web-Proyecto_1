@@ -1,3 +1,7 @@
+package spiderweb;
+
+import shape.Canvas;
+
 import java.awt.*;
 import java.awt.geom.Line2D;
 
@@ -37,12 +41,12 @@ public final class Strand {
      * Draws the line on the canvas.
      */
     public void draw() {
-        Canvas canvas = Canvas.getCanvas();
+        shape.Canvas canvas = shape.Canvas.getCanvas();
         canvas.draw(this, this.color, new Line2D.Double(start.getX(), start.getY(), end.getX(), end.getY()));
     }
 
     public void erase() {
-        Canvas canvas = Canvas.getCanvas();
+        shape.Canvas canvas = Canvas.getCanvas();
         canvas.erase(this);
     }
 

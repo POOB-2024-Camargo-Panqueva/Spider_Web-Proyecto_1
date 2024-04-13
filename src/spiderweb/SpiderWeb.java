@@ -1,3 +1,8 @@
+package spiderweb;
+
+import shape.Canvas;
+import utilities.MessageHandler;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
