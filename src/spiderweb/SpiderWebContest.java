@@ -182,7 +182,8 @@ public class SpiderWebContest {
         Point initialPoint = spiderWeb.getStrands().get(initialStrand).getScaledPoint((double) distance / spiderWeb.getRadio());
         Point finalPoint = spiderWeb.getStrands().get(finalStrand).getScaledPoint((double) distance / spiderWeb.getRadio());
 
-        return new Bridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, bridgeColor);
+        return new NormalBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, bridgeColor);
+        //All Bridges going to be Normals for simulate
     }
 
     public ArrayList<Bridge> buildBridges(int initialStrand, int finalStrand, int remainingAttempts, ArrayList<Bridge> builtBridges, SpiderWeb spiderWeb) {

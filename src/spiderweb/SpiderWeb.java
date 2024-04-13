@@ -80,9 +80,9 @@ public final class SpiderWeb {
             }
 
             String bridgeColor = String.format("%s-%s", initialStrand, radioBridge);
-            temporalBridges.add(new Bridge(radioBridge, initialStrand, initialStrand + 1, null, null, bridgeColor));
+            temporalBridges.add(new NormalBridge(radioBridge, initialStrand, initialStrand + 1, null, null, bridgeColor));
 
-            //TODO: here verify that all radio bridges are different
+            //TODO: All Bridge Created by This Constructor Will Be Normals
         }
 
         final int STRAND_PADDING = 20;
@@ -204,7 +204,7 @@ public final class SpiderWeb {
         ArrayList<Bridge> bridgesClone = new ArrayList<>(this.bridges);
 
         for (Bridge bridge : bridgesClone) {
-            temporalBridges.add(new Bridge(bridge.getDistance(), bridge.getInitialStrand(), bridge.getFinalStrand(), null, null, bridge.getColor()));
+            temporalBridges.add(bridge.createInstance(bridge.getDistance(), bridge.getInitialStrand(), bridge.getFinalStrand(), null, null, bridge.getColor()));
 
             bridge.erase();
             this.bridges.remove(bridge);
@@ -430,7 +430,7 @@ public final class SpiderWeb {
      * @param initialStrand The initial strand of the bridge.
      * @param type          The type of the bridge.
      */
-    public void addBridge(String color, int distance, int initialStrand, Bridge.Types type) {
+    public void addBridge(String color, int distance, int initialStrand, Types type) {
 
         int finalStrand = initialStrand == this.strandCount - 1 ? 0 : initialStrand + 1;
 
@@ -442,7 +442,26 @@ public final class SpiderWeb {
         Point initialPoint = this.strands.get(initialStrand).getScaledPoint((double) distance / this.radio);
         Point finalPoint = this.strands.get(finalStrand).getScaledPoint((double) distance / this.radio);
 
-        this.bridges.add(new Bridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color, type));
+        switch (type) {
+            case NORMAL:
+                this.bridges.add(new NormalBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
+                break;
+            case FIXED:
+                this.bridges.add(new FixedBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
+                break;
+            case TRANSFORMER:
+                this.bridges.add(new TransformerBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
+                break;
+            case WEAK:
+                this.bridges.add(new WeakBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
+                break;
+            case MOBILE:
+                this.bridges.add(new MobileBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
+                break;
+            default:
+                // Manejo de un tipo desconocido
+                break;
+        }
 
         this.draw();
 
@@ -458,7 +477,7 @@ public final class SpiderWeb {
      * @param initialStrand The initial strand of the bridge.
      */
     public void addBridge(String color, int distance, int initialStrand) {
-        this.addBridge(color, distance, initialStrand, Bridge.Types.NORMAL);
+        this.addBridge(color, distance, initialStrand, Types.NORMAL);
     }
 
     /**
@@ -493,7 +512,7 @@ public final class SpiderWeb {
 
         for (int i = 0; i < this.bridges.size(); i++) {
             if (this.bridges.get(i).getColor().equals(color)) {
-                if (this.bridges.get(i).getType() == Bridge.Types.FIXED) {
+                if (this.bridges.get(i) instanceof FixedBridge) {
                     MessageHandler.showError("You cannot delete a 'Fixed' Bridge");
                     break;
                 }
@@ -625,6 +644,10 @@ public final class SpiderWeb {
         return bridges;
     }
 
+    public ArrayList<Bridge> getUsedBridges() {
+        return usedBridges;
+    }
+
     public Spider getSpider() {
         return spider;
     }
@@ -653,7 +676,25 @@ public final class SpiderWeb {
         return currentStrand;
     }
 
-    public ArrayList<Bridge> getUsedBridges() {
-        return usedBridges;
+    /**
+     * The types of bridges.
+     */
+    public enum Types {
+        NORMAL("normal"),
+        FIXED("fixed"),
+        TRANSFORMER("transformer"),
+        WEAK("weak"),
+        MOBILE("mobile");
+
+
+        private final String type;
+
+        Types(String black) {
+            this.type = black;
+        }
+
+        public String getType() {
+            return type;
+        }
     }
 }

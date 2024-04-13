@@ -17,7 +17,6 @@ public class Spider {
     private final HashMap<String, Integer> favoriteStrands;
     private final ArrayList<Strand> traceStrands;
     private Boolean isVisible = true;
-
     private Point position;
 
     /**
@@ -36,7 +35,7 @@ public class Spider {
      * The spider is represented by a black ellipse centered at its current position.
      */
     public void draw() {
-        if(isVisible) {
+        if (isVisible) {
             Canvas canvas = Canvas.getCanvas();
             double xDraw = position.getX() - (double) WIDTH / 2;
             double yDraw = position.getY() - (double) HEIGHT / 2;
@@ -78,12 +77,12 @@ public class Spider {
         return result;
     }
 
-    public void makeInvisible(){
+    public void makeInvisible() {
         isVisible = false;
     }
 
-    public void makeVisible(){
-        isVisible =  true;
+    public void makeVisible() {
+        isVisible = true;
     }
 
     /**
@@ -113,7 +112,7 @@ public class Spider {
             canvas.wait(16);
             this.draw();
 
-            if(SpiderWeb.TEST_MODE){
+            if (SpiderWeb.TEST_MODE) {
                 canvas.draw(this + "currentLine", "red", new Line2D.Double(initialPosition.getX(), initialPosition.getY(), position.getX(), position.getY()));
             }
 
@@ -125,8 +124,8 @@ public class Spider {
             this.draw();
         }
 
-        if(SpiderWeb.TEST_MODE){
-        this.traceStrands.add(new Strand(initialPosition, newPosition, "red"));
+        if (SpiderWeb.TEST_MODE) {
+            this.traceStrands.add(new Strand(initialPosition, newPosition, "red"));
         }
     }
 
