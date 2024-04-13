@@ -114,7 +114,7 @@ public class Spider {
             canvas.wait(16);
             this.draw();
 
-            if (SpiderWeb.TEST_MODE) {
+            if (!SpiderWeb.TEST_MODE) {
                 canvas.draw(this + "currentLine", "red", new Line2D.Double(initialPosition.getX(), initialPosition.getY(), position.getX(), position.getY()));
             }
 
@@ -126,7 +126,7 @@ public class Spider {
             this.draw();
         }
 
-        if (SpiderWeb.TEST_MODE) {
+        if (!SpiderWeb.TEST_MODE) {
             this.traceStrands.add(new Strand(initialPosition, newPosition, "red"));
         }
     }
