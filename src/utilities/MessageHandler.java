@@ -1,6 +1,6 @@
 package utilities;
 
-import spiderweb.SpiderWeb;
+import spiderweb.main.SpiderWeb;
 
 import javax.swing.*;
 

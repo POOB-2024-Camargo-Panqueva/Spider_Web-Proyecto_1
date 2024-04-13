@@ -1,6 +1,8 @@
-package spiderweb;
+package spiderweb.spider;
 
 import shape.Canvas;
+import spiderweb.strands.Strand;
+import spiderweb.main.SpiderWeb;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;

@@ -1,6 +1,9 @@
-package spiderweb;
+package spiderweb.main;
 
 import shape.Canvas;
+import spiderweb.spider.Spider;
+import spiderweb.strands.Strand;
+import spiderweb.bridges.*;
 import utilities.MessageHandler;
 
 import java.awt.*;
@@ -204,7 +207,7 @@ public final class SpiderWeb {
         ArrayList<Bridge> bridgesClone = new ArrayList<>(this.bridges);
 
         for (Bridge bridge : bridgesClone) {
-            temporalBridges.add(bridge.createInstance(bridge.getDistance(), bridge.getInitialStrand(), bridge.getFinalStrand(), null, null, bridge.getColor()));
+            temporalBridges.add(bridge.copy());
 
             bridge.erase();
             this.bridges.remove(bridge);

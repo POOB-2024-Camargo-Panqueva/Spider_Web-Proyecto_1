@@ -1,4 +1,4 @@
-package spiderweb;
+package spiderweb.bridges;
 
 import java.awt.*;
 
@@ -8,12 +8,7 @@ public class TransformerBridge extends Bridge {
     }
 
     @Override
-    public Bridge copy() {
-        return null;
-    }
-
-    @Override
-    public Bridge createInstance(int distance, int initialStrand, int finalStrand, Point initialPoint, Point finalPoint, String color) {
+    public TransformerBridge copy() {
         return new TransformerBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color);
     }
 }

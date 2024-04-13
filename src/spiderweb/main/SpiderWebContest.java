@@ -1,7 +1,7 @@
-package spiderweb;
+package spiderweb.main;
 
-import spiderweb.Bridge;
-import spiderweb.SpiderWeb;
+import spiderweb.bridges.Bridge;
+import spiderweb.bridges.NormalBridge;
 import utilities.MessageHandler;
 
 import java.awt.*;

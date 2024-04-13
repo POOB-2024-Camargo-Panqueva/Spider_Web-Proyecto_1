@@ -1,4 +1,4 @@
-package spiderweb;
+package spiderweb.strands;
 
 import shape.Canvas;
 

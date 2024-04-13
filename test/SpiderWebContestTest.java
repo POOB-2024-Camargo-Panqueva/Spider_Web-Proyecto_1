@@ -1,8 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import spiderweb.Bridge;
-import spiderweb.SpiderWeb;
-import spiderweb.SpiderWebContest;
+import spiderweb.bridges.Bridge;
+import spiderweb.main.SpiderWeb;
+import spiderweb.main.SpiderWebContest;
 
 import java.util.ArrayList;
 

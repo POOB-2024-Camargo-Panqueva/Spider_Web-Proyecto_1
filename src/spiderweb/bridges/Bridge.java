@@ -1,18 +1,19 @@
-package spiderweb;
+package spiderweb.bridges;
 
+import interfaces.Copyable;
 import shape.Canvas;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
 
-public abstract class Bridge {
+public abstract class Bridge implements Copyable<Bridge> {
 
-    private final int distance;
-    private final int initialStrand;
-    private final int finalStrand;
-    private final String color;
-    private final Point initialPoint;
-    private final Point finalPoint;
+    protected final int distance;
+    protected final int initialStrand;
+    protected final int finalStrand;
+    protected final String color;
+    protected final Point initialPoint;
+    protected final Point finalPoint;
 
     /**
      * Constructs a new instance of spiderweb.Bridge with the specified parameters.
@@ -50,15 +51,6 @@ public abstract class Bridge {
         shape.Canvas canvas = shape.Canvas.getCanvas();
         canvas.erase(this);
     }
-
-    /**
-     * Copies the bridge.
-     *
-     * @return A new instance of spiderweb.Bridge with the same parameters as the original.
-     */
-    public abstract Bridge copy();
-
-    public abstract Bridge createInstance(int distance, int initialStrand, int finalStrand, Point initialPoint, Point finalPoint, String color);
 
     public int getDistance() {
         return distance;

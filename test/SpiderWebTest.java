@@ -1,8 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import shape.Canvas;
-import spiderweb.Bridge;
-import spiderweb.SpiderWeb;
+import spiderweb.bridges.Bridge;
+import spiderweb.main.SpiderWeb;
 
 import java.awt.*;
 import java.util.HashSet;
