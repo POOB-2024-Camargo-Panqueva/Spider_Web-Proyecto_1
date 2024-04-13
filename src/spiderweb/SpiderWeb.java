@@ -430,7 +430,7 @@ public final class SpiderWeb {
      * @param initialStrand The initial strand of the bridge.
      * @param type          The type of the bridge.
      */
-    public void addBridge(String color, int distance, int initialStrand, Types type) {
+    public void addBridge(String color, int distance, int initialStrand, Bridge.Types type) {
 
         int finalStrand = initialStrand == this.strandCount - 1 ? 0 : initialStrand + 1;
 
@@ -477,7 +477,7 @@ public final class SpiderWeb {
      * @param initialStrand The initial strand of the bridge.
      */
     public void addBridge(String color, int distance, int initialStrand) {
-        this.addBridge(color, distance, initialStrand, Types.NORMAL);
+        this.addBridge(color, distance, initialStrand, Bridge.Types.NORMAL);
     }
 
     /**
@@ -674,27 +674,5 @@ public final class SpiderWeb {
 
     public int getCurrentStrand() {
         return currentStrand;
-    }
-
-    /**
-     * The types of bridges.
-     */
-    public enum Types {
-        NORMAL("normal"),
-        FIXED("fixed"),
-        TRANSFORMER("transformer"),
-        WEAK("weak"),
-        MOBILE("mobile");
-
-
-        private final String type;
-
-        Types(String black) {
-            this.type = black;
-        }
-
-        public String getType() {
-            return type;
-        }
     }
 }

@@ -104,4 +104,26 @@ public abstract class Bridge {
         return (obj instanceof Bridge) && this.equals((Bridge) obj);
     }
 
+    /**
+     * The types of bridges.
+     */
+    public enum Types {
+        NORMAL("normal"),
+        FIXED("fixed"),
+        TRANSFORMER("transformer"),
+        WEAK("weak"),
+        MOBILE("mobile");
+
+
+        private final String type;
+
+        Types(String black) {
+            this.type = black;
+        }
+
+        public String getType() {
+            return type;
+        }
+    }
+
 }
