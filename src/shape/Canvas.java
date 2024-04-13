@@ -132,6 +132,12 @@ public class Canvas {
      * @param colorString the new colour for the foreground of the Canvas
      */
     public void setForegroundColor(String colorString) {
+        // if colorString starts with a HEX color with 6 chars extract it and ignore the rest
+        if (colorString.matches("^#[A-Fa-f0-9]{6}.*")) {
+            graphic.setColor(Color.decode(colorString.substring(0, 7)));
+            return;
+        }
+
         switch (colorString) {
             case "red" -> graphic.setColor(new Color(227, 64, 64));
             case "blue" -> graphic.setColor(new Color(64, 64, 227));
