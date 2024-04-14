@@ -112,16 +112,10 @@ public class SpiderWeb {
         }
     }
 
-    /**
-     * Gets the shortest way to the target strand, considering bridges.
-     *
-     * @param targetStrand The target strand to which the spider will move.
-     */
-    public void moveSpiderTo(int targetStrand) {
+    private Boolean validateMovement(int targetStrand){
         if (!this.spider.isAlive()) {
             MessageHandler.showError("The spider is dead", "The spider can't move, respawn the spider first.");
-            lastActionWasOk = false;
-            return;
+            return false;
         }
 
         this.spider.resetTraceLines();
@@ -130,22 +124,34 @@ public class SpiderWeb {
 
             if (isVisible)
                 MessageHandler.showError("Invalid strand", "The strand " + targetStrand + " is not valid");
-            lastActionWasOk = false;
-            return;
+            return false;
         }
 
         if (this.currentStrand != -1) {
 
             if (isVisible)
                 MessageHandler.showInfo("The spider isn't on the center, please relocate the spider on the center");
-            lastActionWasOk = false;
-            return;
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Gets the shortest way to the target strand, considering bridges.
+     *
+     * @param targetStrand The target strand to which the spider will move.
+     */
+    public void moveSpiderTo(int targetStrand) {
+
+        if (!this.validateMovement(targetStrand)){
+            this.lastActionWasOk = false;
         }
 
         bridges.sort(Comparator.comparingInt(Bridge::getDistance));
 
         boolean flag = true;
-        int currentStrand = targetStrand;
+        int currentStrand = this.findInitialWay(targetStrand);
         int currentDistance = 0;
 
         while (flag) {
@@ -190,6 +196,39 @@ public class SpiderWeb {
 
         this.currentStrand = targetStrand;
 
+    }
+
+    private int findInitialWay(int targetStrand){
+
+        ArrayList<Bridge> bridges = new ArrayList<>(this.bridges);
+
+        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
+
+        boolean flag = true;
+        int currentStrand = targetStrand;
+        int currentDistance = this.radio;
+
+        while (flag) {
+            int candidates = 0;
+            for (Bridge bridge : bridges) {
+                if ((currentStrand != bridge.getInitialStrand() && currentStrand != bridge.getFinalStrand()) || currentDistance <= bridge.getDistance()) {
+                    continue;
+                }
+                candidates++;
+
+                if (currentStrand == bridge.getFinalStrand()) {
+                    currentStrand = bridge.getInitialStrand();
+
+                } else {
+                    currentStrand = bridge.getFinalStrand();
+                }
+                currentDistance = bridge.getDistance();
+                break;
+            }
+            flag = candidates != 0;
+        }
+
+        return currentStrand;
     }
 
     /**
