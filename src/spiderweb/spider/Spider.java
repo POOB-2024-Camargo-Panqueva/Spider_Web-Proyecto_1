@@ -1,8 +1,8 @@
 package spiderweb.spider;
 
 import shape.Canvas;
-import spiderweb.strands.Strand;
 import spiderweb.main.SpiderWeb;
+import spiderweb.strands.Strand;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
@@ -18,6 +18,7 @@ public class Spider {
     private final int HEIGHT = 24;
     private final HashMap<String, Integer> favoriteStrands;
     private final ArrayList<Strand> traceStrands;
+    private final ArrayList<Leg> legs;
     private Boolean isVisible = true;
     private Point position;
 
@@ -30,15 +31,26 @@ public class Spider {
         this.position = position;
         this.favoriteStrands = new HashMap<>();
         this.traceStrands = new ArrayList<>();
+        this.legs = new ArrayList<>();
+
+        for (int i = 0; i < 8; i++) {
+            legs.add(new Leg(i));
+        }
     }
 
     /**
      * Draws the spider on the canvas.
-     * The spider is represented by a black ellipse centered at its current position.
+     *
+     * @param tick The current tick of the animation.
      */
-    public void draw() {
+    public void draw(int tick) {
         if (isVisible) {
             Canvas canvas = Canvas.getCanvas();
+
+            for (Leg leg : legs) {
+                leg.draw(this.position, tick);
+            }
+
             double xDraw = position.getX() - (double) WIDTH / 2;
             double yDraw = position.getY() - (double) HEIGHT / 2;
 
@@ -50,6 +62,14 @@ public class Spider {
                 strand.draw();
             }
         }
+    }
+
+    /**
+     * Draws the spider on the canvas.
+     * The spider is represented by a black ellipse centered at its current position.
+     */
+    public void draw() {
+        this.draw(0);
     }
 
     /**
@@ -79,12 +99,22 @@ public class Spider {
         return result;
     }
 
+    /**
+     * Makes the spider invisible on the canvas.
+     */
     public void makeInvisible() {
         isVisible = false;
     }
 
+    /**
+     * Makes the spider visible on the canvas.
+     */
     public void makeVisible() {
         isVisible = true;
+
+        for (Leg leg : legs) {
+            leg.makeVisible(this.position, 0);
+        }
     }
 
     /**
@@ -108,11 +138,13 @@ public class Spider {
         };
 
         double parameter = SpiderWeb.TEST_MODE ? -1 : 0;
+        int tick = 0;
 
         while (parameter >= 0 && parameter < 1) {
             this.position = lineFunction.apply(parameter);
             canvas.wait(16);
-            this.draw();
+
+            this.draw(tick++);
 
             if (!SpiderWeb.TEST_MODE) {
                 canvas.draw(this + "currentLine", "red", new Line2D.Double(initialPosition.getX(), initialPosition.getY(), position.getX(), position.getY()));
@@ -156,6 +188,9 @@ public class Spider {
         return favoriteStrands;
     }
 
+    /**
+     * Resets the trace lines drawn by the spider.
+     */
     public void resetTraceLines() {
         for (Strand strand : traceStrands) {
             strand.erase();
