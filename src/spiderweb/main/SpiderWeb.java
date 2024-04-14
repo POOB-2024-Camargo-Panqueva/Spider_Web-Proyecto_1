@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Set;
 
-public final class SpiderWeb {
+public class SpiderWeb {
 
     public static boolean TEST_MODE = false;
 
@@ -113,9 +113,13 @@ public final class SpiderWeb {
      * Gets the shortest way to the target strand, considering bridges.
      *
      * @param targetStrand The target strand to which the spider will move.
-     * @return ArrayList of Points representing the movement points.
      */
     public void moveSpiderTo(int targetStrand) {
+        if (!this.spider.isAlive()) {
+            MessageHandler.showError("The spider is dead", "The spider can't move, respawn the spider first.");
+            lastActionWasOk = false;
+            return;
+        }
 
         this.spider.resetTraceLines();
 
@@ -141,7 +145,6 @@ public final class SpiderWeb {
         boolean flag = true;
         int currentStrand = targetStrand;
         int currentDistance = 0;
-        boolean isFinalMovement = false;
 
         while (flag) {
             int candidates = 0;
@@ -162,7 +165,7 @@ public final class SpiderWeb {
                     this.spider.moveTo(bridge.getFinalPoint());
                 }
 
-                bridge.triggerAction(this);
+                // bridge.triggerAction(this);
 
                 currentDistance = bridge.getDistance();
                 usedBridges.add(bridge);
@@ -425,7 +428,7 @@ public final class SpiderWeb {
                 this.bridges.add(new MobileBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
                 break;
             default:
-                // Manejo de un tipo desconocido
+                // TODO: Handle invalid bridge type
                 break;
         }
 
@@ -587,6 +590,24 @@ public final class SpiderWeb {
         lastActionWasOk = true;
 
         System.exit(0);
+    }
+
+    public void killSpider() {
+        this.spider.kill();
+
+        lastActionWasOk = true;
+    }
+
+    public void respawnSpider() {
+        this.spider.respawn();
+
+        this.spider.setPosition(new Point(Canvas.CENTER));
+        this.currentStrand = -1;
+        this.spider.resetTraceLines();
+
+        MessageHandler.showInfo("The spider has been respawned");
+
+        lastActionWasOk = true;
     }
 
     public boolean lastActionWasOk() {

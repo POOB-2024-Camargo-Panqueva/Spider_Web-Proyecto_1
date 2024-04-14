@@ -22,6 +22,8 @@ public class Spider {
     private Boolean isVisible = true;
     private Point position;
 
+    private boolean isAlive;
+
     /**
      * Constructs a new instance of Spider with the given initial position.
      *
@@ -32,6 +34,8 @@ public class Spider {
         this.favoriteStrands = new HashMap<>();
         this.traceStrands = new ArrayList<>();
         this.legs = new ArrayList<>();
+
+        this.isAlive = true;
 
         for (int i = 0; i < 8; i++) {
             legs.add(new Leg(i));
@@ -54,7 +58,7 @@ public class Spider {
             double xDraw = position.getX() - (double) WIDTH / 2;
             double yDraw = position.getY() - (double) HEIGHT / 2;
 
-            canvas.draw(this, "black", new Ellipse2D.Double(xDraw, yDraw, WIDTH, HEIGHT));
+            canvas.draw(this, this.isAlive ? "black" : "#909090", new Ellipse2D.Double(xDraw, yDraw, WIDTH, HEIGHT));
             canvas.draw(this + "leftEye", "red", new Ellipse2D.Double(xDraw + 5, yDraw + 5, 5, 5));
             canvas.draw(this + "rightEye", "red", new Ellipse2D.Double(xDraw + 20, yDraw + 5, 5, 5));
 
@@ -196,5 +200,17 @@ public class Spider {
             strand.erase();
         }
         traceStrands.clear();
+    }
+
+    public void kill() {
+        this.isAlive = false;
+    }
+
+    public void respawn() {
+        this.isAlive = true;
+    }
+
+    public boolean isAlive() {
+        return this.isAlive;
     }
 }
