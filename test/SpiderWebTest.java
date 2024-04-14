@@ -250,19 +250,17 @@ class SpiderWebTest {
      */
     @Test
     public void testAddAndRemoveFavoriteStrand() {
-        String colorToAdd = "red";
-        int strandToAdd = 2;
-        int previousNumOfFavoriteStrands = spiderWeb.getSpider().getFavoriteStrands().size();
+        int strandFavorite = spiderWeb.getFavoriteStrand();
 
-        spiderWeb.addFavoriteStrand(colorToAdd, strandToAdd);
+        spiderWeb.addFavoriteStrand(2);
         assertTrue(spiderWeb.isLastActionWasOk());
 
-        assertEquals(previousNumOfFavoriteStrands + 1, spiderWeb.getSpider().getFavoriteStrands().size());
+        assertEquals(2, spiderWeb.getFavoriteStrand());
 
-        spiderWeb.removeFavoriteStrand(colorToAdd);
+        spiderWeb.removeFavoriteStrand();
         assertTrue(spiderWeb.isLastActionWasOk());
 
-        assertEquals(previousNumOfFavoriteStrands, spiderWeb.getSpider().getFavoriteStrands().size());
+        assertEquals(-1, spiderWeb.getFavoriteStrand());
     }
 }
 
