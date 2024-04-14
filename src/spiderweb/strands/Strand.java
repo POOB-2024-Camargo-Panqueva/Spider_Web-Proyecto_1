@@ -1,15 +1,18 @@
 package spiderweb.strands;
 
 import shape.Canvas;
+import spiderweb.main.SpiderWeb;
+import utilities.MessageHandler;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
 
-public final class Strand {
+public abstract class Strand {
 
-    private final Point start;
-    private final Point end;
-    private String color;
+    protected final Point start;
+    protected final Point end;
+    protected String color;
+    protected static Strand favoriteStrand;
 
     /**
      * Constructs a new instance of Line with the specified start and end points.
@@ -37,6 +40,8 @@ public final class Strand {
         this.color = color;
     }
 
+    public abstract void triggerAction(SpiderWeb spiderWeb);
+
     /**
      * Draws the line on the canvas.
      */
@@ -59,8 +64,7 @@ public final class Strand {
      */
     public Point getScaledPoint(double scale) {
         if (scale < 0 || scale > 1) {
-            //TODO: Check if this throws an exception or show a message
-            throw new IllegalArgumentException("Invalid scale");
+            MessageHandler.showError("Invalid Scale");
         }
 
         int x = (int) (start.getX() + (end.getX() - start.getX()) * scale);
@@ -78,7 +82,7 @@ public final class Strand {
     }
 
     public String toString() {
-        return String.format("Line [%s, %s]", start, end);
+        return String.format("Color: %s", color);
     }
 
     public boolean equals(Strand strand) {
@@ -89,4 +93,20 @@ public final class Strand {
     public boolean equals(Object obj) {
         return (obj instanceof Strand) && this.equals((Strand) obj);
     }
+
+    public enum Types {
+        KILLER("normal"),
+        NORMAL("fixed");
+
+        private final String type;
+
+        Types(String black) {
+            this.type = black;
+        }
+
+        public String getType() {
+            return type;
+        }
+    }
+
 }

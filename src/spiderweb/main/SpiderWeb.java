@@ -3,13 +3,14 @@ package spiderweb.main;
 import shape.Canvas;
 import spiderweb.bridges.*;
 import spiderweb.spider.Spider;
+import spiderweb.strands.KillerStrand;
+import spiderweb.strands.NormalStrand;
 import spiderweb.strands.Strand;
 import utilities.MessageHandler;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Set;
 
 public class SpiderWeb {
 
@@ -19,6 +20,7 @@ public class SpiderWeb {
     private final ArrayList<Bridge> bridges;
     private final ArrayList<Bridge> usedBridges;
     private final Spider spider;
+    private int favoriteStrand;
 
     private boolean lastActionWasOk;
     private boolean isVisible;
@@ -43,6 +45,7 @@ public class SpiderWeb {
         this.strands = new ArrayList<>(this.strandCount);
         this.bridges = new ArrayList<>();
         this.usedBridges = new ArrayList<>();
+        this.favoriteStrand = -1;
 
         this.generateStrandLines();
     }
@@ -97,9 +100,9 @@ public class SpiderWeb {
         this.isVisible = false;
 
         this.spider = new Spider(new Point(Canvas.CENTER));
-        this.spider.addFavoriteStrand("default", favoriteStrand);
         this.strands = new ArrayList<>(this.strandCount);
         this.generateStrandLines();
+        this.addFavoriteStrand(favoriteStrand);
 
         this.bridges = new ArrayList<>();
         this.usedBridges = new ArrayList<>();
@@ -280,7 +283,7 @@ public class SpiderWeb {
             double angle = Math.toRadians((double) 360 / this.strandCount * index);
             int x = (int) (this.radio * Math.cos(angle));
             int y = (int) (this.radio * Math.sin(angle));
-            this.strands.add(new Strand(new Point(Canvas.CENTER), new Point(Canvas.CENTER.x + x, Canvas.CENTER.y + y)));
+            this.strands.add(new NormalStrand(new Point(Canvas.CENTER), new Point(Canvas.CENTER.x + x, Canvas.CENTER.y + y)));
         }
     }
 
@@ -337,12 +340,7 @@ public class SpiderWeb {
             info.append(String.format("    + Bridge %d: %s\n", i + 1, this.bridges.get(i)));
         }
 
-        info.append(String.format("The spider web has %d favorite strands\n", this.spider.getFavoriteStrands().size()));
-        Set<String> favoriteStrands = this.spider.getFavoriteStrands().keySet();
-
-        for (String color : favoriteStrands) {
-            info.append(String.format("    + Favorite Strand (%s): %s\n", color, this.spider.getFavoriteStrands().get(color)));
-        }
+        info.append(String.format("    + Favorite Strand: (%d)\n", this.getFavoriteStrand()));
 
         MessageHandler.showInfo(info.toString());
 
@@ -494,8 +492,8 @@ public class SpiderWeb {
                     break;
                 }
                 if (this.bridges.get(i) instanceof TransformerBridge) {
-                    this.spider.removeFavoriteStrand("default");
-                    this.spider.addFavoriteStrand("default", bridgeToRemove.getInitialStrand());
+                    this.removeFavoriteStrand();
+                    this.addFavoriteStrand(bridgeToRemove.getInitialStrand());
                 }
 
                 targetBridge = this.bridges.remove(i);
@@ -522,45 +520,88 @@ public class SpiderWeb {
     /**
      * Adds a favorite strand to the spider associated with the specified color and strand.
      *
-     * @param color  The color of the favorite strand.
      * @param strand The value of the favorite strand.
      */
-    public void addFavoriteStrand(String color, Integer strand) {
-        Integer result = spider.addFavoriteStrand(color, strand);
+    public void addFavoriteStrand(Integer strand, String color, Strand.Types type) {
 
-        if (result != null) {
-
-            if (isVisible)
-                MessageHandler.showError("The new strand cannot be added", "already exist a strand with color: " + color);
-
+        if (strand < 0 || strand > strands.size() - 1) {
+            MessageHandler.showError("Favorite Strand out of Range");
             lastActionWasOk = false;
             return;
         }
 
-        this.strands.get(strand).setColor(color);
+        if (favoriteStrand != -1) {
+            //TODO: error or just substitution
+            if (isVisible)
+                MessageHandler.showError("The new favorite strand cannot be added", "First remove the current favorite 'removeFavoriteStrand()'");
+            lastActionWasOk = false;
+            return;
+        }
+
+        if (strand == favoriteStrand) {
+            if (isVisible)
+                MessageHandler.showInfo("The new favorite strand cannot be added", "already exist as a favorite");
+            lastActionWasOk = false;
+            return;
+        }
+        Strand favoriteStrand = this.strands.get(strand);
+
+        switch (type) {
+            case NORMAL:
+                this.strands.set(strand, new NormalStrand(Canvas.CENTER, favoriteStrand.getEnd(), color));
+                break;
+            case KILLER:
+                this.strands.set(strand, new KillerStrand(Canvas.CENTER, favoriteStrand.getEnd(), color));
+                break;
+            default:
+                // TODO: Handle invalid Strand type
+                break;
+        }
+        this.favoriteStrand = strand;
+
+        this.draw();
 
         lastActionWasOk = true;
     }
 
-    /**
-     * Removes a favorite strand from the spider based on the specified color.
-     *
-     * @param color The color of the favorite strand to remove.
-     */
-    public void removeFavoriteStrand(String color) {
-        Integer result = spider.removeFavoriteStrand(color);
+    public void addFavoriteStrand(Integer strand) {
+        this.addFavoriteStrand(strand, "green", Strand.Types.NORMAL);
 
-        if (result == null) {
+    }
+
+    public void addFavoriteStrand(Integer strand, String color) {
+        this.addFavoriteStrand(strand, color, Strand.Types.NORMAL);
+
+    }
+
+    public void addFavoriteStrand(Integer strand, Strand.Types type) {
+        this.addFavoriteStrand(strand, "green", type);
+    }
+
+
+    /**
+     * Removes a favorite strand.
+     * Removes a favorite strand.
+     */
+    public void removeFavoriteStrand() {
+
+        if (favoriteStrand == -1) {
 
             if (isVisible)
-                MessageHandler.showError("Favorite strand not found", "The favorite strand with color: " + color + " was not found");
+                MessageHandler.showError("Favorite strand not found", "There is not a favorite Strand yet");
 
             lastActionWasOk = false;
             return;
         }
 
-        this.strands.get(result).setColor("gray");
-        MessageHandler.showInfo("The Strand " + color + " was deleted");
+        Strand favoriteStrandToRemove = this.strands.get(favoriteStrand);
+
+        this.strands.set(favoriteStrand, new NormalStrand(Canvas.CENTER, favoriteStrandToRemove.getEnd()));
+
+        favoriteStrand = -1;
+        MessageHandler.showInfo("The favorite Strand was deleted");
+
+        this.draw();
 
         lastActionWasOk = true;
     }
@@ -568,18 +609,17 @@ public class SpiderWeb {
     /**
      * Prints the favorite strands of the spider.
      */
-    public void printFavoriteStrands() {
-        StringBuilder info = new StringBuilder();
+    public void printFavoriteStrand() {
 
-        info.append("The spider has the following favorite strands:\n");
+        String info;
 
-        Set<String> favoriteStrands = this.spider.getFavoriteStrands().keySet();
-
-        for (String color : favoriteStrands) {
-            info.append(String.format("    + Favorite Strand (%s): %s\n", color, this.spider.getFavoriteStrands().get(color)));
+        if (favoriteStrand == -1) {
+            info = "There is not a favorite Strand yet";
+        } else {
+            info = "The spider has the following favorite strands:\n" +
+                    String.format("Favorite Strand: (%d):", this.favoriteStrand);
         }
-
-        MessageHandler.showInfo(info.toString());
+        MessageHandler.showInfo(info);
 
         lastActionWasOk = true;
     }
@@ -656,7 +696,7 @@ public class SpiderWeb {
     }
 
     public int getFavoriteStrand() {
-        return spider.getFavoriteStrands().get("default");
+        return this.favoriteStrand;
     }
 
     public int getRadio() {

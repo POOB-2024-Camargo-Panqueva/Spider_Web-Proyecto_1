@@ -2,6 +2,7 @@ package spiderweb.spider;
 
 import shape.Canvas;
 import spiderweb.main.SpiderWeb;
+import spiderweb.strands.NormalStrand;
 import spiderweb.strands.Strand;
 
 import java.awt.*;
@@ -9,14 +10,12 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.Function;
 
 public class Spider {
 
     private final int WIDTH = 30;
     private final int HEIGHT = 24;
-    private final HashMap<String, Integer> favoriteStrands;
     private final ArrayList<Strand> traceStrands;
     private final ArrayList<Leg> legs;
     private Boolean isVisible = true;
@@ -31,7 +30,6 @@ public class Spider {
      */
     public Spider(Point position) {
         this.position = position;
-        this.favoriteStrands = new HashMap<>();
         this.traceStrands = new ArrayList<>();
         this.legs = new ArrayList<>();
 
@@ -74,33 +72,6 @@ public class Spider {
      */
     public void draw() {
         this.draw(0);
-    }
-
-    /**
-     * Removes the favorite strand associated with the specified color from the spider.
-     *
-     * @param color The color of the favorite strand to remove.
-     * @return The value of the removed favorite strand, or null if no favorite strand was associated with the specified color.
-     */
-    public Integer removeFavoriteStrand(String color) {
-        return favoriteStrands.remove(color);
-    }
-
-    /**
-     * Adds a favorite strand to the spider with the specified color and value.
-     * If a favorite strand with the same color already exists, it will be replaced with the new value.
-     *
-     * @param color  The color of the favorite strand to add.
-     * @param strand The value of the favorite strand to add.
-     * @return The previous value associated with the specified color, or null if no favorite strand was associated with the color.
-     */
-    public Integer addFavoriteStrand(String color, Integer strand) {
-        Integer result = favoriteStrands.remove(color);
-        if (result == null) {
-            favoriteStrands.put(color, strand);
-        }
-
-        return result;
     }
 
     /**
@@ -163,7 +134,7 @@ public class Spider {
         }
 
         if (!SpiderWeb.TEST_MODE) {
-            this.traceStrands.add(new Strand(initialPosition, newPosition, "red"));
+            this.traceStrands.add(new NormalStrand(initialPosition, newPosition, "red"));
         }
     }
 
@@ -186,10 +157,6 @@ public class Spider {
     public void setPosition(Point position) {
         this.position = position;
         this.draw();
-    }
-
-    public HashMap<String, Integer> getFavoriteStrands() {
-        return favoriteStrands;
     }
 
     /**
