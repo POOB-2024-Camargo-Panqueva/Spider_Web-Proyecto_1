@@ -81,7 +81,7 @@ public abstract class Bridge implements Copyable<Bridge> {
 
     @Override
     public String toString() {
-        return String.format("Initial spiderweb.Strand: Color: %s", color);
+        return String.format("Initial Strand: %d - Final Strand: %d - Distance: %d - Color: %s", initialStrand, finalStrand, distance, color);
     }
 
     public boolean equals(Bridge bridge) {

@@ -14,12 +14,16 @@ public class MobileBridge extends Bridge {
         int newDistance = (int) (this.getDistance() * 1.2);
         int newStrand = Math.max(initialStrand, finalStrand);
 
+        if (newDistance > spiderWeb.getRadio()){
+            return;
+        }
+
         if ((finalStrand == 0 && initialStrand == spiderWeb.getStrandCount() - 1) || initialStrand == 0 && finalStrand == spiderWeb.getStrandCount() - 1) {
             newStrand = 0;
         }
 
         spiderWeb.removeBridge(this.getColor());
-        spiderWeb.addBridge(this.color + "####", newDistance, newStrand, Types.MOBILE);
+        spiderWeb.addBridge(this.color, newDistance, newStrand, Types.MOBILE);
     }
 
     @Override

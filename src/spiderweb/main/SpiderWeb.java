@@ -139,7 +139,6 @@ public class SpiderWeb {
             return;
         }
 
-        ArrayList<Bridge> bridges = new ArrayList<>(this.bridges);
         bridges.sort(Comparator.comparingInt(Bridge::getDistance));
 
         boolean flag = true;
@@ -149,7 +148,10 @@ public class SpiderWeb {
         while (flag) {
             int candidates = 0;
 
-            for (Bridge bridge : bridges) {
+            for (int i = 0; i < bridges.size(); i++) {
+
+                Bridge bridge = bridges.get(i);
+
                 if ((currentStrand != bridge.getInitialStrand() && currentStrand != bridge.getFinalStrand()) || currentDistance >= bridge.getDistance()) {
                     continue;
                 }
