@@ -1,14 +1,14 @@
 package spiderweb.main;
 
 import shape.Canvas;
+import spiderweb.bridges.*;
 import spiderweb.spider.Spider;
 import spiderweb.strands.Strand;
-import spiderweb.bridges.*;
 import utilities.MessageHandler;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 
 public final class SpiderWeb {
@@ -115,54 +115,6 @@ public final class SpiderWeb {
      * @param targetStrand The target strand to which the spider will move.
      * @return ArrayList of Points representing the movement points.
      */
-    private ArrayList<Point> getMovementPoints(int targetStrand) {
-        ArrayList<Bridge> bridges = new ArrayList<>(this.bridges);
-        bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
-
-        ArrayList<Point> movementPoints = new ArrayList<>();
-        boolean flag = true;
-        int currentStrand = targetStrand;
-        int currentDistance = this.radio;
-
-        movementPoints.add(strands.get(targetStrand).getEnd());
-
-        while (flag) {
-            int candidates = 0;
-
-            for (Bridge bridge : bridges) {
-                if ((currentStrand != bridge.getInitialStrand() && currentStrand != bridge.getFinalStrand()) || currentDistance <= bridge.getDistance()) {
-                    continue;
-                }
-                candidates++;
-
-                if (currentStrand == bridge.getFinalStrand()) {
-                    movementPoints.add(bridge.getFinalPoint());
-                    movementPoints.add(bridge.getInitialPoint());
-                    currentStrand = bridge.getInitialStrand();
-                } else {
-                    movementPoints.add(bridge.getInitialPoint());
-                    movementPoints.add(bridge.getFinalPoint());
-                    currentStrand = bridge.getFinalStrand();
-                }
-
-                currentDistance = bridge.getDistance();
-                usedBridges.add(bridge);
-                break;
-            }
-
-            flag = candidates != 0;
-        }
-
-        movementPoints.add(Canvas.CENTER);
-
-        return movementPoints;
-    }
-
-    /**
-     * Moves the spider to the specified strand.
-     *
-     * @param targetStrand The target strand to which the spider will move.
-     */
     public void moveSpiderTo(int targetStrand) {
 
         this.spider.resetTraceLines();
@@ -183,13 +135,48 @@ public final class SpiderWeb {
             return;
         }
 
-        ArrayList<Point> movementPoints = this.getMovementPoints(targetStrand);
-        Collections.reverse(movementPoints);
+        ArrayList<Bridge> bridges = new ArrayList<>(this.bridges);
+        bridges.sort(Comparator.comparingInt(Bridge::getDistance));
 
-        this.spider.moveTo(movementPoints);
+        boolean flag = true;
+        int currentStrand = targetStrand;
+        int currentDistance = 0;
+        boolean isFinalMovement = false;
+
+        while (flag) {
+            int candidates = 0;
+
+            for (Bridge bridge : bridges) {
+                if ((currentStrand != bridge.getInitialStrand() && currentStrand != bridge.getFinalStrand()) || currentDistance >= bridge.getDistance()) {
+                    continue;
+                }
+                candidates++;
+
+                if (currentStrand == bridge.getFinalStrand()) {
+                    currentStrand = bridge.getInitialStrand();
+                    this.spider.moveTo(bridge.getFinalPoint());
+                    this.spider.moveTo(bridge.getInitialPoint());
+                } else {
+                    currentStrand = bridge.getFinalStrand();
+                    this.spider.moveTo(bridge.getInitialPoint());
+                    this.spider.moveTo(bridge.getFinalPoint());
+                }
+
+                bridge.triggerAction(this);
+
+                currentDistance = bridge.getDistance();
+                usedBridges.add(bridge);
+
+                break;
+            }
+
+            flag = candidates != 0;
+        }
+
+        this.spider.moveTo(strands.get(currentStrand).getEnd());
+
         this.currentStrand = targetStrand;
 
-        lastActionWasOk = true;
     }
 
     /**
@@ -242,30 +229,6 @@ public final class SpiderWeb {
 
         if (this.currentStrand != -1)
             this.spider.setPosition(new Point(this.strands.get(currentStrand).getEnd()));
-
-        lastActionWasOk = true;
-    }
-
-    /**
-     * Moves the spider back to the center of the spider web.
-     */
-    public void moveSpiderToCenter() {
-
-        this.spider.resetTraceLines();
-
-        if (this.currentStrand == -1) {
-
-            if (isVisible)
-                MessageHandler.showInfo("The spider is already on the center");
-
-            lastActionWasOk = false;
-            return;
-        }
-
-        ArrayList<Point> movementPoints = this.getMovementPoints(this.currentStrand);
-
-        this.spider.moveTo(movementPoints);
-        this.currentStrand = -1;
 
         lastActionWasOk = true;
     }
