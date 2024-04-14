@@ -2,9 +2,11 @@ package spiderweb.bridges;
 
 import interfaces.Copyable;
 import shape.Canvas;
+import spiderweb.main.SpiderWeb;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
+import java.util.function.Consumer;
 
 public abstract class Bridge implements Copyable<Bridge> {
 
@@ -35,12 +37,13 @@ public abstract class Bridge implements Copyable<Bridge> {
         this.finalPoint = finalPoint;
     }
 
+    public abstract void triggerAction(SpiderWeb spiderWeb);
 
     /**
      * Draws the bridge on the canvas.
      */
     public void draw() {
-        shape.Canvas canvas = Canvas.getCanvas();
+        Canvas canvas = Canvas.getCanvas();
         canvas.draw(this, this.color, new Line2D.Double(initialPoint.getX(), initialPoint.getY(), finalPoint.getX(), finalPoint.getY()));
     }
 
@@ -48,7 +51,7 @@ public abstract class Bridge implements Copyable<Bridge> {
      * Erases the bridge from the canvas.
      */
     public void erase() {
-        shape.Canvas canvas = shape.Canvas.getCanvas();
+        Canvas canvas = Canvas.getCanvas();
         canvas.erase(this);
     }
 
@@ -78,7 +81,7 @@ public abstract class Bridge implements Copyable<Bridge> {
 
     @Override
     public String toString() {
-        return String.format("Initial spiderweb.Strand: %d, Final spiderweb.Strand: %d, Distance: %d, Color: %s", initialStrand, finalStrand, distance, color);
+        return String.format("Initial spiderweb.Strand: Color: %s", color);
     }
 
     public boolean equals(Bridge bridge) {

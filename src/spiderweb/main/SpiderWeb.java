@@ -159,13 +159,18 @@ public class SpiderWeb {
                     currentStrand = bridge.getInitialStrand();
                     this.spider.moveTo(bridge.getFinalPoint());
                     this.spider.moveTo(bridge.getInitialPoint());
+                    this.currentStrand = bridge.getInitialStrand();
+                    bridge.triggerAction(this);
+                    bridges.sort(Comparator.comparingInt(Bridge::getDistance));
+
                 } else {
                     currentStrand = bridge.getFinalStrand();
                     this.spider.moveTo(bridge.getInitialPoint());
                     this.spider.moveTo(bridge.getFinalPoint());
+                    this.currentStrand = bridge.getFinalStrand();
+                    bridge.triggerAction(this);
+                    bridges.sort(Comparator.comparingInt(Bridge::getDistance));
                 }
-
-                // bridge.triggerAction(this);
 
                 currentDistance = bridge.getDistance();
                 usedBridges.add(bridge);
@@ -480,10 +485,15 @@ public class SpiderWeb {
         Bridge targetBridge = null;
 
         for (int i = 0; i < this.bridges.size(); i++) {
-            if (this.bridges.get(i).getColor().equals(color)) {
+            Bridge bridgeToRemove = this.bridges.get(i);
+            if (bridgeToRemove.getColor().equals(color)) {
                 if (this.bridges.get(i) instanceof FixedBridge) {
                     MessageHandler.showError("You cannot delete a 'Fixed' Bridge");
                     break;
+                }
+                if (this.bridges.get(i) instanceof TransformerBridge) {
+                    this.spider.removeFavoriteStrand("default");
+                    this.spider.addFavoriteStrand("default", bridgeToRemove.getInitialStrand());
                 }
 
                 targetBridge = this.bridges.remove(i);
