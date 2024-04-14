@@ -4,7 +4,7 @@ import spiderweb.main.SpiderWeb;
 
 import java.awt.*;
 
-public class NormalStrand extends Strand{
+public class NormalStrand extends Strand {
 
     public NormalStrand(Point start, Point end) {
         super(start, end);
@@ -16,7 +16,5 @@ public class NormalStrand extends Strand{
 
     @Override
     public void triggerAction(SpiderWeb spiderWeb) {
-        return;
     }
-
 }

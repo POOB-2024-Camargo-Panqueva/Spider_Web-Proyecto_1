@@ -14,7 +14,7 @@ public class MobileBridge extends Bridge {
         int newDistance = (int) (this.getDistance() * 1.2);
         int newStrand = Math.max(initialStrand, finalStrand);
 
-        if (newDistance > spiderWeb.getRadio()){
+        if (newDistance > spiderWeb.getRadio()) {
             return;
         }
 
@@ -30,5 +30,4 @@ public class MobileBridge extends Bridge {
     public MobileBridge copy() {
         return new MobileBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color);
     }
-
 }

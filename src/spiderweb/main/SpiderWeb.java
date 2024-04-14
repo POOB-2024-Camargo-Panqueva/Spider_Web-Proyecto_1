@@ -112,7 +112,7 @@ public class SpiderWeb {
         }
     }
 
-    private Boolean validateMovement(int targetStrand){
+    private Boolean validateMovement(int targetStrand) {
         if (!this.spider.isAlive()) {
             MessageHandler.showError("The spider is dead", "The spider can't move, respawn the spider first.");
             return false;
@@ -144,7 +144,7 @@ public class SpiderWeb {
      */
     public void moveSpiderTo(int targetStrand) {
 
-        if (!this.validateMovement(targetStrand)){
+        if (!this.validateMovement(targetStrand)) {
             this.lastActionWasOk = false;
         }
 
@@ -171,17 +171,15 @@ public class SpiderWeb {
                     this.spider.moveTo(bridge.getFinalPoint());
                     this.spider.moveTo(bridge.getInitialPoint());
                     this.currentStrand = bridge.getInitialStrand();
-                    bridge.triggerAction(this);
-                    bridges.sort(Comparator.comparingInt(Bridge::getDistance));
-
                 } else {
                     currentStrand = bridge.getFinalStrand();
                     this.spider.moveTo(bridge.getInitialPoint());
                     this.spider.moveTo(bridge.getFinalPoint());
                     this.currentStrand = bridge.getFinalStrand();
-                    bridge.triggerAction(this);
-                    bridges.sort(Comparator.comparingInt(Bridge::getDistance));
                 }
+
+                bridge.triggerAction(this);
+                bridges.sort(Comparator.comparingInt(Bridge::getDistance));
 
                 currentDistance = bridge.getDistance();
                 usedBridges.add(bridge);
@@ -198,7 +196,7 @@ public class SpiderWeb {
 
     }
 
-    private int findInitialWay(int targetStrand){
+    private int findInitialWay(int targetStrand) {
 
         ArrayList<Bridge> bridges = new ArrayList<>(this.bridges);
 
@@ -561,10 +559,17 @@ public class SpiderWeb {
      *
      * @param strand The value of the favorite strand.
      */
-    public void addFavoriteStrand(Integer strand, String color, Strand.Types type) {
+    public void addFavoriteStrand(int strand, String color, Strand.Types type) {
 
         if (strand < 0 || strand > strands.size() - 1) {
             MessageHandler.showError("Favorite Strand out of Range");
+            lastActionWasOk = false;
+            return;
+        }
+
+        if (strand == favoriteStrand) {
+            if (isVisible)
+                MessageHandler.showInfo("The new favorite strand cannot be added", "already exist as a favorite");
             lastActionWasOk = false;
             return;
         }
@@ -577,12 +582,6 @@ public class SpiderWeb {
             return;
         }
 
-        if (strand == favoriteStrand) {
-            if (isVisible)
-                MessageHandler.showInfo("The new favorite strand cannot be added", "already exist as a favorite");
-            lastActionWasOk = false;
-            return;
-        }
         Strand favoriteStrand = this.strands.get(strand);
 
         switch (type) {

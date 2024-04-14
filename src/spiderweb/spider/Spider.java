@@ -138,18 +138,6 @@ public class Spider {
         }
     }
 
-    /**
-     * Moves the spider smoothly through a series of positions.
-     * The spider transitions smoothly from its current position to each of the specified positions in sequence.
-     *
-     * @param positions An array of points representing the positions to which the spider will move.
-     */
-    public void moveTo(ArrayList<Point> positions) {
-        for (Point position : positions) {
-            this.moveTo(position);
-        }
-    }
-
     public Point getPosition() {
         return position;
     }

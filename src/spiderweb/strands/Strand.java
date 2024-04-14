@@ -12,7 +12,6 @@ public abstract class Strand {
     protected final Point start;
     protected final Point end;
     protected String color;
-    protected static Strand favoriteStrand;
 
     /**
      * Constructs a new instance of Line with the specified start and end points.
@@ -40,7 +39,12 @@ public abstract class Strand {
         this.color = color;
     }
 
-    public abstract void triggerAction(SpiderWeb spiderWeb);
+    /**
+     * Triggers the action associated with the strand.
+     *
+     * @param spiderWeb The spider web instance.
+     */
+    protected abstract void triggerAction(SpiderWeb spiderWeb);
 
     /**
      * Draws the line on the canvas.
@@ -108,5 +112,4 @@ public abstract class Strand {
             return type;
         }
     }
-
 }

@@ -3,7 +3,6 @@ package spiderweb.bridges;
 import spiderweb.main.SpiderWeb;
 
 import java.awt.*;
-import java.util.function.Consumer;
 
 public class WeakBridge extends Bridge {
     public WeakBridge(int distance, int initialStrand, int finalStrand, Point initialPoint, Point finalPoint, String color) {
@@ -19,6 +18,4 @@ public class WeakBridge extends Bridge {
     public WeakBridge copy() {
         return new WeakBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color);
     }
-
-    public Consumer<SpiderWeb> triggerAction;
 }

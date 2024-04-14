@@ -6,7 +6,6 @@ import spiderweb.main.SpiderWeb;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
-import java.util.function.Consumer;
 
 public abstract class Bridge implements Copyable<Bridge> {
 
@@ -37,6 +36,11 @@ public abstract class Bridge implements Copyable<Bridge> {
         this.finalPoint = finalPoint;
     }
 
+    /**
+     * Triggers the action of the bridge.
+     *
+     * @param spiderWeb The spider web where the bridge is.
+     */
     public abstract void triggerAction(SpiderWeb spiderWeb);
 
     /**
@@ -120,5 +124,4 @@ public abstract class Bridge implements Copyable<Bridge> {
             return type;
         }
     }
-
 }

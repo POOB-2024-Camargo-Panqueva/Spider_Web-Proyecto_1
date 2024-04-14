@@ -250,7 +250,6 @@ class SpiderWebTest {
      */
     @Test
     public void testAddAndRemoveFavoriteStrand() {
-        int strandFavorite = spiderWeb.getFavoriteStrand();
 
         spiderWeb.addFavoriteStrand(2);
         assertTrue(spiderWeb.isLastActionWasOk());
