@@ -142,7 +142,7 @@ public class SpiderWeb {
      *
      * @param targetStrand The target strand to which the spider will move.
      */
-    public void moveSpiderTo(int targetStrand) {
+    private void moveSpider(int targetStrand) {
 
         if (!this.validateMovement(targetStrand)) {
             this.lastActionWasOk = false;
@@ -152,7 +152,7 @@ public class SpiderWeb {
         bridges.sort(Comparator.comparingInt(Bridge::getDistance));
 
         boolean flag = true;
-        int currentStrand = this.findInitialWay(targetStrand);
+        int currentStrand = targetStrand;
         int currentDistance = 0;
 
         while (flag) {
@@ -195,6 +195,14 @@ public class SpiderWeb {
 
         this.currentStrand = targetStrand;
 
+    }
+
+    public void moveSpiderTo(int targetStrand){
+        this.moveSpider(this.findInitialWay(targetStrand));
+    }
+
+    public void moveSpiderFrom(int targetStrand){
+        moveSpider(targetStrand);
     }
 
     private int findInitialWay(int targetStrand) {
