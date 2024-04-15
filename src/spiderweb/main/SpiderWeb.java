@@ -3,6 +3,7 @@ package spiderweb.main;
 import shape.Canvas;
 import spiderweb.bridges.*;
 import spiderweb.spider.Spider;
+import spiderweb.strands.BouncyStrand;
 import spiderweb.strands.KillerStrand;
 import spiderweb.strands.NormalStrand;
 import spiderweb.strands.Strand;
@@ -27,6 +28,7 @@ public class SpiderWeb {
     private int currentStrand;
     private int strandCount;
     private int radio;
+    private int currentDistance;
 
     /**
      * Constructs a SpiderWeb with the specified number of strands and radio.
@@ -46,6 +48,7 @@ public class SpiderWeb {
         this.bridges = new ArrayList<>();
         this.usedBridges = new ArrayList<>();
         this.favoriteStrand = -1;
+        this.currentDistance = 0;
 
         this.generateStrandLines();
     }
@@ -96,6 +99,7 @@ public class SpiderWeb {
         this.strandCount = strands;
         this.radio = radio + STRAND_PADDING;
         this.currentStrand = -1;
+        this.currentDistance = 0;
 
         this.isVisible = false;
 
@@ -152,56 +156,66 @@ public class SpiderWeb {
         bridges.sort(Comparator.comparingInt(Bridge::getDistance));
 
         boolean flag = true;
-        int currentStrand = targetStrand;
-        int currentDistance = 0;
+        this.currentStrand = targetStrand;
+        this.currentDistance = 0;
+
+        this.strands.get(currentStrand).triggerAction(this);
 
         while (flag) {
+            if (!spider.isAlive()) {
+                break;
+            }
             int candidates = 0;
 
             for (int i = 0; i < bridges.size(); i++) {
 
                 Bridge bridge = bridges.get(i);
 
-                if ((currentStrand != bridge.getInitialStrand() && currentStrand != bridge.getFinalStrand()) || currentDistance >= bridge.getDistance()) {
+                if ((currentStrand != bridge.getInitialStrand() && currentStrand != bridge.getFinalStrand()) || this.currentDistance >= bridge.getDistance()) {
                     continue;
                 }
                 candidates++;
 
                 if (currentStrand == bridge.getFinalStrand()) {
-                    currentStrand = bridge.getInitialStrand();
+                    this.currentStrand = bridge.getInitialStrand();
                     this.spider.moveTo(bridge.getFinalPoint());
                     this.spider.moveTo(bridge.getInitialPoint());
                     this.currentStrand = bridge.getInitialStrand();
                 } else {
-                    currentStrand = bridge.getFinalStrand();
+                    this.currentStrand = bridge.getFinalStrand();
                     this.spider.moveTo(bridge.getInitialPoint());
                     this.spider.moveTo(bridge.getFinalPoint());
                     this.currentStrand = bridge.getFinalStrand();
                 }
+                this.strands.get(currentStrand).triggerAction(this);
 
                 bridge.triggerAction(this);
                 bridges.sort(Comparator.comparingInt(Bridge::getDistance));
 
-                currentDistance = bridge.getDistance();
+                this.currentDistance = bridge.getDistance();
                 usedBridges.add(bridge);
 
+                break;
+            }
+
+            if (!spider.isAlive()) {
                 break;
             }
 
             flag = candidates != 0;
         }
 
-        this.spider.moveTo(strands.get(currentStrand).getEnd());
-
-        this.currentStrand = targetStrand;
+        if (spider.isAlive()) {
+            this.spider.moveTo(strands.get(currentStrand).getEnd());
+        }
 
     }
 
-    public void moveSpiderTo(int targetStrand){
+    public void moveSpiderTo(int targetStrand) {
         this.moveSpider(this.findInitialWay(targetStrand));
     }
 
-    public void moveSpiderFrom(int targetStrand){
+    public void moveSpiderFrom(int targetStrand) {
         moveSpider(targetStrand);
     }
 
@@ -297,7 +311,6 @@ public class SpiderWeb {
      */
     public void sitSpiderOnCenter() {
 
-        // TODO: Animate sit action
         this.spider.resetTraceLines();
 
         if (this.currentStrand == -1) {
@@ -311,6 +324,7 @@ public class SpiderWeb {
 
         this.spider.setPosition(new Point(Canvas.CENTER));
         this.currentStrand = -1;
+        this.currentDistance = 0;
 
         lastActionWasOk = true;
     }
@@ -410,7 +424,7 @@ public class SpiderWeb {
 
             return true;
         }
-        if (distance < 0 || distance > radio) {
+        if (distance < 0 || distance >= radio) {
 
             if (isVisible)
                 MessageHandler.showError("Invalid distance", "The distance " + distance + " is not valid");
@@ -544,6 +558,28 @@ public class SpiderWeb {
         return targetBridge;
     }
 
+    private boolean isInvalidStrand(int strand) {
+        if (strand < 0 || strand > strands.size() - 1) {
+            MessageHandler.showError("Favorite Strand out of Range");
+            return true;
+        }
+
+        if (strand == favoriteStrand) {
+            if (isVisible)
+                MessageHandler.showInfo("The new favorite strand cannot be added", "already exist as a favorite");
+            return true;
+        }
+
+        if (favoriteStrand != -1) {
+            //TODO: error or just substitution
+            if (isVisible)
+                MessageHandler.showError("The new favorite strand cannot be added", "First remove the current favorite 'removeFavoriteStrand()'");
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Adds a favorite strand to the spider associated with the specified color and strand.
      *
@@ -551,24 +587,8 @@ public class SpiderWeb {
      */
     public void addFavoriteStrand(int strand, String color, Strand.Types type) {
 
-        if (strand < 0 || strand > strands.size() - 1) {
-            MessageHandler.showError("Favorite Strand out of Range");
-            lastActionWasOk = false;
-            return;
-        }
-
-        if (strand == favoriteStrand) {
-            if (isVisible)
-                MessageHandler.showInfo("The new favorite strand cannot be added", "already exist as a favorite");
-            lastActionWasOk = false;
-            return;
-        }
-
-        if (favoriteStrand != -1) {
-            //TODO: error or just substitution
-            if (isVisible)
-                MessageHandler.showError("The new favorite strand cannot be added", "First remove the current favorite 'removeFavoriteStrand()'");
-            lastActionWasOk = false;
+        if (this.isInvalidStrand(strand)) {
+            this.lastActionWasOk = false;
             return;
         }
 
@@ -580,6 +600,9 @@ public class SpiderWeb {
                 break;
             case KILLER:
                 this.strands.set(strand, new KillerStrand(Canvas.CENTER, favoriteStrand.getEnd(), color));
+                break;
+            case BOUNCY:
+                this.strands.set(strand, new BouncyStrand(Canvas.CENTER, favoriteStrand.getEnd(), color));
                 break;
             default:
                 // TODO: Handle invalid Strand type
@@ -741,5 +764,42 @@ public class SpiderWeb {
 
     public int getCurrentStrand() {
         return currentStrand;
+    }
+
+    public void setCurrentStrand(int currentStrand) {
+        this.currentStrand = currentStrand;
+    }
+
+    public void setStrandType(int strand, String color, Strand.Types type) {
+        if (isInvalidStrand(strand)) {
+            this.lastActionWasOk = false;
+            return;
+        }
+
+        Strand favoriteStrand = this.strands.get(strand);
+
+        switch (type) {
+            case NORMAL:
+                this.strands.set(strand, new NormalStrand(Canvas.CENTER, favoriteStrand.getEnd(), color));
+                break;
+            case KILLER:
+                this.strands.set(strand, new KillerStrand(Canvas.CENTER, favoriteStrand.getEnd(), color));
+                break;
+            case BOUNCY:
+                this.strands.set(strand, new BouncyStrand(Canvas.CENTER, favoriteStrand.getEnd(), color));
+                break;
+            default:
+                // TODO: Handle invalid Strand type
+                break;
+        }
+        this.favoriteStrand = strand;
+
+        this.draw();
+
+        lastActionWasOk = true;
+    }
+
+    public int getCurrentDistance() {
+        return currentDistance;
     }
 }

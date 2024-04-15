@@ -17,7 +17,7 @@ class SpiderWebTest {
     @BeforeEach
     void setUp() {
         SpiderWeb.TEST_MODE = true;
-        spiderWeb = new SpiderWeb(7, 200);
+        spiderWeb = new SpiderWeb(7, 201);
 
         spiderWeb.makeInvisible();
         spiderWeb.addBridge("1", 100, 1);
@@ -42,7 +42,7 @@ class SpiderWebTest {
         int moveTo = 5;
 
         spiderWeb.moveSpiderTo(moveTo);
-        assertEquals(spiderWeb.getCurrentStrand(), moveTo);
+        assertEquals(moveTo, spiderWeb.getCurrentStrand());
         assertTrue(spiderWeb.isLastActionWasOk());
     }
 
@@ -186,7 +186,7 @@ class SpiderWebTest {
         int moveTo = spiderWeb.getStrandCount() - 1;
 
         spiderWeb.moveSpiderTo(moveTo);
-        assertEquals(spiderWeb.getCurrentStrand(), moveTo);
+        assertEquals(moveTo, spiderWeb.getCurrentStrand());
         assertTrue(spiderWeb.isLastActionWasOk());
 
         spiderWeb.sitSpiderOnCenter();
@@ -194,7 +194,7 @@ class SpiderWebTest {
         moveTo = spiderWeb.getStrandCount() - 3;
 
         spiderWeb.moveSpiderTo(moveTo);
-        assertEquals(spiderWeb.getCurrentStrand(), moveTo);
+        assertEquals(moveTo, spiderWeb.getCurrentStrand());
         assertTrue(spiderWeb.isLastActionWasOk());
     }
 

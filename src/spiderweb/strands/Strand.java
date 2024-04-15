@@ -44,7 +44,7 @@ public abstract class Strand {
      *
      * @param spiderWeb The spider web instance.
      */
-    protected abstract void triggerAction(SpiderWeb spiderWeb);
+    public abstract void triggerAction(SpiderWeb spiderWeb);
 
     /**
      * Draws the line on the canvas.
@@ -85,9 +85,7 @@ public abstract class Strand {
         return end;
     }
 
-    public String toString() {
-        return String.format("Color: %s", color);
-    }
+    public abstract String toString();
 
     public boolean equals(Strand strand) {
         return strand.start.equals(this.start) && strand.end.equals(this.end) && strand.color.equals(this.color);
@@ -99,8 +97,9 @@ public abstract class Strand {
     }
 
     public enum Types {
-        KILLER("normal"),
-        NORMAL("fixed");
+        KILLER("killer"),
+        NORMAL("normal"),
+        BOUNCY("bouncy");
 
         private final String type;
 

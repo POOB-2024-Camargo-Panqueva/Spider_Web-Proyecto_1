@@ -159,6 +159,7 @@ public class Spider {
 
     public void kill() {
         this.isAlive = false;
+        this.moveTo(this.position);
     }
 
     public void respawn() {

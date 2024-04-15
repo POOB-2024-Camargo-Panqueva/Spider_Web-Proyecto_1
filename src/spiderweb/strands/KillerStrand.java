@@ -14,4 +14,9 @@ public class KillerStrand extends Strand {
     public void triggerAction(SpiderWeb spiderWeb) {
         spiderWeb.killSpider();
     }
+
+    @Override
+    public String toString() {
+        return String.format("Color: %s - Type: %s", color, Strand.Types.KILLER.getType());
+    }
 }

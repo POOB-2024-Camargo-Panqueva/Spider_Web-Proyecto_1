@@ -17,4 +17,9 @@ public class NormalStrand extends Strand {
     @Override
     public void triggerAction(SpiderWeb spiderWeb) {
     }
+
+    @Override
+    public String toString() {
+        return String.format("Color: %s - Type: %s", color, Strand.Types.NORMAL.getType());
+    }
 }
