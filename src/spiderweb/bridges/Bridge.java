@@ -111,8 +111,8 @@ public abstract class Bridge implements Copyable<Bridge> {
         FIXED("fixed"),
         TRANSFORMER("transformer"),
         WEAK("weak"),
-        MOBILE("mobile");
-
+        MOBILE("mobile"),
+        FUNNY("funny");
 
         private final String type;
 

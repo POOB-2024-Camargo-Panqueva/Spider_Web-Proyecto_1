@@ -146,6 +146,7 @@ public class SpiderWeb {
 
         if (!this.validateMovement(targetStrand)) {
             this.lastActionWasOk = false;
+            return;
         }
 
         bridges.sort(Comparator.comparingInt(Bridge::getDistance));
@@ -453,31 +454,12 @@ public class SpiderWeb {
         Point initialPoint = this.strands.get(initialStrand).getScaledPoint((double) distance / this.radio);
         Point finalPoint = this.strands.get(finalStrand).getScaledPoint((double) distance / this.radio);
 
-        switch (type) {
-            case NORMAL:
-                this.bridges.add(new NormalBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
-                break;
-            case FIXED:
-                this.bridges.add(new FixedBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
-                break;
-            case TRANSFORMER:
-                this.bridges.add(new TransformerBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
-                break;
-            case WEAK:
-                this.bridges.add(new WeakBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
-                break;
-            case MOBILE:
-                this.bridges.add(new MobileBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color));
-                break;
-            default:
-                // TODO: Handle invalid bridge type
-                break;
-        }
+        Bridge bridge = BridgeFactory.buildBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color, type);
+        this.bridges.add(bridge);
 
         this.draw();
 
         this.lastActionWasOk = true;
-
     }
 
     /**
