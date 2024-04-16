@@ -207,9 +207,6 @@ public class SpiderWeb {
                     this.spider.moveTo(bridge.getFinalPoint());
                     this.currentStrand = bridge.getFinalStrand();
                 }
-                this.strands.get(currentStrand).triggerAction(this);
-
-                bridge.triggerAction(this);
 
                 if (moveToCenter){
                     this.bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
@@ -221,6 +218,9 @@ public class SpiderWeb {
                 this.currentDistance = bridge.getDistance();
                 usedBridges.add(bridge);
 
+                this.strands.get(currentStrand).triggerAction(this);
+
+                bridge.triggerAction(this);
                 break;
             }
 
@@ -829,8 +829,10 @@ public class SpiderWeb {
     }
 
     public void setStrandType(int strand, String color, Strand.Types type) {
-        if (isInvalidStrand(strand)) {
-            this.lastActionWasOk = false;
+
+        if (strand < 0 || strand > strands.size() - 1) {
+            MessageHandler.showError("Favorite Strand out of Range");
+            lastActionWasOk = false;
             return;
         }
 
@@ -850,7 +852,6 @@ public class SpiderWeb {
                 // TODO: Handle invalid Strand type
                 break;
         }
-        this.favoriteStrand = strand;
 
         this.draw();
 
