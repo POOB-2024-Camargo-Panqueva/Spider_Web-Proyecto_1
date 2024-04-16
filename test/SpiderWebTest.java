@@ -261,6 +261,28 @@ class SpiderWebTest {
 
         assertEquals(-1, spiderWeb.getFavoriteStrand());
     }
+
+    /**
+     * Test to respawn the spider in the center of the canvas. **/
+    @Test
+    public void testRespawnSpider() {
+        spiderWeb.killSpider();
+        spiderWeb.respawnSpider();
+        assertTrue(spiderWeb.getSpider().isAlive());
+        assertEquals(new Point(Canvas.CENTER), spiderWeb.getSpider().getPosition());
+        assertEquals(-1, spiderWeb.getCurrentStrand());
+        assertTrue(spiderWeb.isLastActionWasOk());
+    }
+
+    /**
+     * Test to kill the spider.
+     **/
+    @Test
+    public void testKillSpider() {
+        spiderWeb.killSpider();
+        assertFalse(spiderWeb.getSpider().isAlive());
+        assertTrue(spiderWeb.isLastActionWasOk());
+    }
 }
 
 

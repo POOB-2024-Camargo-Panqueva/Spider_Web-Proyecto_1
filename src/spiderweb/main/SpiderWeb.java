@@ -116,7 +116,14 @@ public class SpiderWeb {
         }
     }
 
-    private Boolean validateMovement(int targetStrand) {
+    /**
+     * Validates if the spider can move to the target strand.
+     * Checks if the spider is alive, if the target strand is valid,
+     *
+     * @param targetStrand The target strand to which the spider intends to move.
+     * @return True if the movement is valid, otherwise false.
+     */
+    private Boolean validateMovement(int targetStrand, boolean moveToCenter) {
         if (!this.spider.isAlive()) {
             MessageHandler.showError("The spider is dead", "The spider can't move, respawn the spider first.");
             return false;
@@ -131,7 +138,7 @@ public class SpiderWeb {
             return false;
         }
 
-        if (this.currentStrand != -1) {
+        if (this.currentStrand != -1 && !moveToCenter) {
 
             if (isVisible)
                 MessageHandler.showInfo("The spider isn't on the center, please relocate the spider on the center");
@@ -146,19 +153,24 @@ public class SpiderWeb {
      *
      * @param targetStrand The target strand to which the spider will move.
      */
-    private void moveSpider(int targetStrand) {
+    private void moveSpider(int targetStrand, boolean moveToCenter) {
 
-        if (!this.validateMovement(targetStrand)) {
+        if (!this.validateMovement(targetStrand, moveToCenter)) {
             this.lastActionWasOk = false;
             return;
         }
 
         bridges.sort(Comparator.comparingInt(Bridge::getDistance));
-
-        boolean flag = true;
-        this.currentStrand = targetStrand;
         this.currentDistance = 0;
 
+        if(moveToCenter){
+            this.bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
+            this.currentDistance = this.radio;
+        }
+
+        this.currentStrand = targetStrand;
+
+        boolean flag = true;
         this.strands.get(currentStrand).triggerAction(this);
 
         while (flag) {
@@ -171,9 +183,17 @@ public class SpiderWeb {
 
                 Bridge bridge = bridges.get(i);
 
-                if ((currentStrand != bridge.getInitialStrand() && currentStrand != bridge.getFinalStrand()) || this.currentDistance >= bridge.getDistance()) {
-                    continue;
+                if(moveToCenter){
+                    if ((currentStrand != bridge.getInitialStrand() && currentStrand != bridge.getFinalStrand()) || this.currentDistance <= bridge.getDistance()) {
+                        continue;
+                    }
                 }
+                else{
+                    if ((currentStrand != bridge.getInitialStrand() && currentStrand != bridge.getFinalStrand()) || this.currentDistance >= bridge.getDistance()) {
+                        continue;
+                    }
+                }
+
                 candidates++;
 
                 if (currentStrand == bridge.getFinalStrand()) {
@@ -190,7 +210,13 @@ public class SpiderWeb {
                 this.strands.get(currentStrand).triggerAction(this);
 
                 bridge.triggerAction(this);
-                bridges.sort(Comparator.comparingInt(Bridge::getDistance));
+
+                if (moveToCenter){
+                    this.bridges.sort((Bridge b1, Bridge b2) -> b2.getDistance() - b1.getDistance());
+                }
+                else {
+                    bridges.sort(Comparator.comparingInt(Bridge::getDistance));
+                }
 
                 this.currentDistance = bridge.getDistance();
                 usedBridges.add(bridge);
@@ -206,17 +232,39 @@ public class SpiderWeb {
         }
 
         if (spider.isAlive()) {
+            if(moveToCenter){
+                this.spider.moveTo(Canvas.CENTER);
+                this.currentStrand = -1;
+                this.currentDistance = 0;
+                return;
+            }
             this.spider.moveTo(strands.get(currentStrand).getEnd());
+            this.currentDistance = this.radio;
         }
 
     }
 
+    /**
+     * Moves the spider to the specified target strand by finding the initial way and then moving the spider.
+     *
+     * @param targetStrand The target strand to which the spider will move.
+     */
     public void moveSpiderTo(int targetStrand) {
-        this.moveSpider(this.findInitialWay(targetStrand));
+        this.moveSpider(this.findInitialWay(targetStrand), false);
     }
 
+    /**
+     * Moves the spider from the specified target strand by directly moving the spider.
+     * This method is used when the spider is already positioned on the target strand.
+     *
+     * @param targetStrand The target strand from which the spider will move.
+     */
     public void moveSpiderFrom(int targetStrand) {
-        moveSpider(targetStrand);
+        moveSpider(targetStrand, false);
+    }
+
+    public void moveSpiderToCenter(){
+        moveSpider(this.currentStrand, true);
     }
 
     private int findInitialWay(int targetStrand) {
@@ -695,12 +743,18 @@ public class SpiderWeb {
         System.exit(0);
     }
 
+    /**
+     * Kills the spider, making it unable to move or trigger any actions.
+     */
     public void killSpider() {
         this.spider.kill();
 
         lastActionWasOk = true;
     }
 
+    /**
+     * Respawns the spider in the center of the spider web, resets its trace lines, and displays an information message.
+     */
     public void respawnSpider() {
         this.spider.respawn();
 

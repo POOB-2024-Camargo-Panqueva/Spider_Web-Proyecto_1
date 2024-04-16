@@ -99,7 +99,7 @@ public class Spider {
      * @param newPosition The new position to which the spider will move.
      */
     public void moveTo(Point newPosition) {
-        final double STEP = (double) 1 / getPosition().distance(newPosition);
+        final double STEP = (double) 2 / getPosition().distance(newPosition);
 
         Point2D.Double director = new Point2D.Double(newPosition.getX() - position.getX(), newPosition.getY() - position.getY());
         Point initialPosition = new Point((int) position.getX(), (int) position.getY());
@@ -117,7 +117,7 @@ public class Spider {
 
         while (parameter >= 0 && parameter < 1) {
             this.position = lineFunction.apply(parameter);
-            canvas.wait(16);
+            canvas.wait(8);
 
             this.draw(tick++);
 
