@@ -1,6 +1,7 @@
 package spiderweb.bridges;
 
 import spiderweb.main.SpiderWeb;
+import utilities.MessageHandler;
 
 import java.awt.*;
 import java.util.ArrayList;

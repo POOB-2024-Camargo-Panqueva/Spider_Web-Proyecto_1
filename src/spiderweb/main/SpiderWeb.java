@@ -514,6 +514,10 @@ public class SpiderWeb {
      */
     public void addBridge(String color, int distance, int initialStrand, Bridge.Types type) {
 
+        if(bridges.stream().anyMatch(candidate -> candidate.getColor().equals(color))){
+            removeBridge(color);
+        }
+
         int finalStrand = initialStrand == this.strandCount - 1 ? 0 : initialStrand + 1;
 
         if (this.isInvalidBridge(color, distance, initialStrand, finalStrand)) {

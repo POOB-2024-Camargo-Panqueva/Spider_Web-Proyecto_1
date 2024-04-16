@@ -3,6 +3,7 @@ package spiderweb.bridges;
 import spiderweb.main.SpiderWeb;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class MobileBridge extends Bridge {
     public MobileBridge(int distance, int initialStrand, int finalStrand, Point initialPoint, Point finalPoint, String color) {
