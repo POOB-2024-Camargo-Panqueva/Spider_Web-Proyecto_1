@@ -19,4 +19,12 @@ public class KillerStrand extends Strand {
     public String toString() {
         return String.format("Color: %s - Type: %s", color, Strand.Types.KILLER.getType());
     }
+    @Override
+    public Types getType() {
+        return Types.KILLER;
+    }
+    @Override
+    public Strand copy() {
+        return new KillerStrand(this.start, this.end, this.color);
+    }
 }

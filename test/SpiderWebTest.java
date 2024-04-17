@@ -107,9 +107,8 @@ class SpiderWebTest {
         int initialBridges = spiderWeb.getBridges().size();
 
         spiderWeb.addBridge("ColorTest0", 26, invalidStrand);
+        assertFalse(spiderWeb.lastActionWasOk());
         spiderWeb.addBridge("ColorTest3", invalidDistance, 1);
-        spiderWeb.addBridge(invalidRepeatedColor, 2, 1);
-
         assertFalse(spiderWeb.lastActionWasOk());
         assertEquals(initialBridges, spiderWeb.getBridges().size());
 

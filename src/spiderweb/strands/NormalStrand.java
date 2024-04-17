@@ -19,7 +19,17 @@ public class NormalStrand extends Strand {
     }
 
     @Override
+    public Types getType() {
+        return Types.NORMAL;
+    }
+
+    @Override
     public String toString() {
         return String.format("Color: %s - Type: %s", color, Strand.Types.NORMAL.getType());
+    }
+
+    @Override
+    public Strand copy() {
+        return new NormalStrand(this.start, this.end, this.color);
     }
 }

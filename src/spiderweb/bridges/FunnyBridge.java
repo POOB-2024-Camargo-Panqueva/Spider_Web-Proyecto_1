@@ -33,6 +33,11 @@ public class FunnyBridge extends Bridge {
     }
 
     @Override
+    public Types getType() {
+        return Types.FUNNY;
+    }
+
+    @Override
     public Bridge copy() {
         return new FunnyBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color);
     }

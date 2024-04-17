@@ -75,6 +75,8 @@ public abstract class Bridge implements Copyable<Bridge> {
         return color;
     }
 
+    public abstract Types getType();
+
     public Point getInitialPoint() {
         return initialPoint;
     }

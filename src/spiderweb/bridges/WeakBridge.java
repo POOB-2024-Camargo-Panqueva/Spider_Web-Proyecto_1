@@ -15,6 +15,11 @@ public class WeakBridge extends Bridge {
     }
 
     @Override
+    public Types getType() {
+        return Types.WEAK;
+    }
+
+    @Override
     public WeakBridge copy() {
         return new WeakBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color);
     }

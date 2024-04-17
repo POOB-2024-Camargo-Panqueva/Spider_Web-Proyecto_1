@@ -14,6 +14,11 @@ public class TransformerBridge extends Bridge {
     }
 
     @Override
+    public Types getType() {
+        return Types.TRANSFORMER;
+    }
+
+    @Override
     public TransformerBridge copy() {
         return new TransformerBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color);
     }

@@ -1,13 +1,15 @@
 package spiderweb.strands;
 
+import interfaces.Copyable;
 import shape.Canvas;
+import spiderweb.bridges.Bridge;
 import spiderweb.main.SpiderWeb;
 import utilities.MessageHandler;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
 
-public abstract class Strand {
+public abstract class Strand implements Copyable<Strand> {
 
     protected final Point start;
     protected final Point end;
@@ -75,6 +77,8 @@ public abstract class Strand {
         int y = (int) (start.getY() + (end.getY() - start.getY()) * scale);
         return new Point(x, y);
     }
+
+    public abstract Strand.Types getType();
 
     public void setColor(String color) {
         this.color = color;

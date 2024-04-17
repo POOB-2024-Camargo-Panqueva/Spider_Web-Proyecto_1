@@ -33,4 +33,15 @@ public class BouncyStrand extends Strand {
     public String toString() {
         return String.format("Color: %s - Type: %s", color, Strand.Types.BOUNCY.getType());
     }
+
+    @Override
+    public Types getType() {
+        return Types.BOUNCY;
+    }
+
+    @Override
+    public Strand copy() {
+        return new BouncyStrand(this.start, this.end, this.color);
+    }
+
 }

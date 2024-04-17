@@ -28,6 +28,11 @@ public class MobileBridge extends Bridge {
     }
 
     @Override
+    public Types getType() {
+        return Types.MOBILE;
+    }
+
+    @Override
     public MobileBridge copy() {
         return new MobileBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color);
     }

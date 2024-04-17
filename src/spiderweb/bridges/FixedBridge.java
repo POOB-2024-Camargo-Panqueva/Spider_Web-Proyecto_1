@@ -14,6 +14,11 @@ public class FixedBridge extends Bridge {
     }
 
     @Override
+    public Types getType() {
+        return Types.FIXED;
+    }
+
+    @Override
     public FixedBridge copy() {
         return new FixedBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color);
     }

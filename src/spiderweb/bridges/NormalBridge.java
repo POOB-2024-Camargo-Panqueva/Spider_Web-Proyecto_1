@@ -14,7 +14,14 @@ public class NormalBridge extends Bridge {
     }
 
     @Override
+    public Types getType() {
+        return Types.NORMAL;
+    }
+
+    @Override
     public NormalBridge copy() {
         return new NormalBridge(distance, initialStrand, finalStrand, initialPoint, finalPoint, color);
     }
+
+
 }

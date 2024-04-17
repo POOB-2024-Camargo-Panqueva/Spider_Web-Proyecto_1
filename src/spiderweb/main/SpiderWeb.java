@@ -322,7 +322,7 @@ public class SpiderWeb {
         }
 
         for (Bridge bridge : temporalBridges) {
-            this.addBridge(bridge.getColor(), bridge.getDistance(), bridge.getInitialStrand());
+            this.addBridge(bridge.getColor(), bridge.getDistance(), bridge.getInitialStrand(), bridge.getType());
         }
         this.draw();
 
